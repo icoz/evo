@@ -11,6 +11,7 @@ public:
     explicit Map(QObject *parent = 0);
     ObjectType getType(int x, int y);
     ObjectType getType(ObjectCoord oc);
+    ObjectType getTypeNear(ObjectCoord oc, Direction dir);
     char getDistance(ObjectCoord oc, Direction dir);
     bool coordIsValid(int x, int y);
     bool coordIsValid(ObjectCoord oc);

@@ -23,6 +23,11 @@ ObjectType Map::getType(ObjectCoord oc)
     return getType(oc.x, oc.y);
 }
 
+ObjectType Map::getTypeNear(ObjectCoord oc, Direction dir)
+{
+    return getType(oc.addDist(1,dir));
+}
+
 
 bool Map::coordIsValid(ObjectCoord oc)
 {

@@ -33,7 +33,7 @@ public slots:
     void onSplit_Mutate(ObjectCoord obj, Direction direction);*/
 protected:
     Map map;
-    QList<Animal> anis;
+    QList<Animal*> anis;
 };
 
 #endif // WORLD_H
