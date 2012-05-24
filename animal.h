@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "common.h"
-//#include "map.h"
+#include "map.h"
 
 enum AnimalCommand {
     //cmd group
@@ -13,16 +13,23 @@ enum AnimalCommand {
     jump_to,        // next byte = signed char, how to move (+right, -left)
     jump_to_ifz,    // next byte = signed char, if data in memory = 0
     jump_to_ifnz,   // next byte = signed char, if data in memory != 0
+    start,          // nop, but START marker
     restart,        // set cmd_ptr = 0
+    end,            // look for next start
     //work with sensors (set value of sensor to DATA)
     eye_up_distance,
-    eye_up_type,
     eye_down_distance,
-    eye_down_type,
     eye_left_distance,
-    eye_left_type,
     eye_right_distance,
-    eye_right_type,
+    /*eye_up_type,
+    eye_down_type,
+    eye_left_type,
+    eye_right_type,*/
+    //touch_* return type of object near animal
+    touch_up,
+    touch_down,
+    touch_left,
+    touch_right,
     //mem group
     move_mem_left,  // move carret on cmd left
     move_mem_right, // move carret on cmd right
@@ -55,12 +62,14 @@ class Animal : public QObject
     Q_OBJECT
 public:
 //    explicit Animal(World *w, QObject *parent = 0): QObject(parent), world(w) {}
-    explicit Animal(QList<char> cmds,
+    explicit Animal(Map *mmap, QList<char> cmds,
                     QList<char> mems,
                     int cmd_start_ptr = 0,
                     int mem_start_ptr = 0,
                     QObject *parent = 0)
-        : QObject(parent), cmd(cmds), mem(mems), cmd_ptr(cmd_start_ptr), mem_ptr(mem_start_ptr) {}
+        : QObject(parent), map(mmap), cmd(cmds),
+          mem(mems), cmd_ptr(cmd_start_ptr),
+          mem_ptr(mem_start_ptr) {searchStart();}
 
 signals:
     void move(Direction direction);
@@ -68,7 +77,7 @@ signals:
     void wait();
     void suicide();
     void split(Direction direction);
-    void split_Mutate(Direction direction);//*/
+    void splitMutate(Direction direction);//*/
 
 public slots:
     void onTick();
@@ -80,13 +89,16 @@ public slots:
     bool split(Direction direction);
     bool splitMutate(Direction direction);*/
 protected:
-    //World *world;
-//    ObjectCoord coord;
+    Map *map;
+    ObjectCoord coord;
     QList<char> cmd;   // code
     QList<char> mem;            // HDD
     char data;                  // RAM
     int cmd_ptr, //pointer to command cell
         mem_ptr; //pointer to memory cell
+
+    void run();
+    void searchStart();
 };
 
 #endif // ANIMAL_H
