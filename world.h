@@ -14,6 +14,10 @@ public:
 
     //ObjectType checkObjectCoord(ObjectCoord c);
     EyeData getEye(ObjectCoord oc, Direction dir);
+    void addAnimal(QList<char> cmds,
+                   QList<char> mems,
+                   int cmd_start_ptr = 0,
+                   int mem_start_ptr = 0);
 
 signals:
     void tick();
@@ -33,7 +37,7 @@ public slots:
     void onSplit_Mutate(ObjectCoord obj, Direction direction);*/
 protected:
     Map map;
-    QList<Animal*> anis;
+    QList<Animal> anis;
 };
 
 #endif // WORLD_H
