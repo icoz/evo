@@ -36,16 +36,59 @@ MainWindow::MainWindow(QWidget *parent) :
       << action_eat_down
       << action_move_down
       << end;
-    c3 << start
-       << action_eat_right
-       << action_move_right
-       << action_eat_up
-       << action_move_up
-      << end;
+    c3 << start // spiral
+       << load_from_mem //load from var1
+       << move_mem_right //save var2
+       << data_dec
+       << save_to_mem
+
+       << move_mem_right //save to var3
+       << data_dec
+       << save_to_mem
+           //right
+               << action_move_right
+               << data_dec
+           << jump_to_ifnz
+           << AnimalCommand(-3)
+           //up
+           << load_from_mem
+           << data_dec
+           << save_to_mem
+               << action_move_up
+               << data_dec
+           << jump_to_ifnz
+           << AnimalCommand(-3)
+           //left
+           << load_from_mem
+           << data_dec
+           << save_to_mem
+               << action_move_left
+               << data_dec
+           << jump_to_ifnz
+           << AnimalCommand(-3)
+           //down
+           << load_from_mem
+           << data_dec
+           << save_to_mem
+               << action_move_down
+               << data_dec
+           << jump_to_ifnz
+           << AnimalCommand(-3)
+           //dec var2
+           << move_mem_left
+           << load_from_mem
+           << data_dec
+           << save_to_mem
+           << jump_to_ifnz
+           << AnimalCommand(-33)
+           << move_mem_left // restore var1
+//           << load_from_mem
+       << end;
     QList<char> cmds = Animal::compile(c);
     QList<char> cmds2 = Animal::compile(c2);
     QList<char> cmds3 = Animal::compile(c3);
     QList<char> mems;
+    mems << 10 << 0 << 0;
     for (int i=0; i < 50; i++){
         w.addAnimal(cmds,mems);
         w.addAnimal(cmds2,mems);
