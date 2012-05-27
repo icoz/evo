@@ -17,11 +17,15 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_pushButton_clicked();
+    void onTimerTimeout();
+    void on_btnStart_clicked();
+
+    void on_btnStop_clicked();
 
 private:
     Ui::MainWindow *ui;
     World w;
+    QTimer tmr;
 };
 
 #endif // MAINWINDOW_H
