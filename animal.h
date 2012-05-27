@@ -93,6 +93,7 @@ public slots:
     bool splitMutate(Direction direction);*/
 public:
     ObjectCoord coord;
+    int food;
 
 protected:
     Map *map;

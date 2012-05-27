@@ -40,6 +40,7 @@ public slots:
 protected:
     Map map;
     QList<Animal*> anis;
+    Animal* findAnimalByCoord(ObjectCoord oc);
 };
 
 #endif // WORLD_H

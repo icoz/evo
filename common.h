@@ -22,12 +22,20 @@ struct ObjectCoord {
         case Up: y += distance; break;
         case Down: y -= distance; break;
         }
-        x %= 256;
-        y %= 256;
+        if (x < 0) x += MAP_X_SIZE;
+        if (y < 0) y += MAP_Y_SIZE;
+        x %= MAP_X_SIZE;
+        y %= MAP_Y_SIZE;
         //if (x > 255) x = 0;
         //if (y > 255) y = 0;
         //if (x ) x = 0;
         return *this;
+    }
+    bool operator==(ObjectCoord oc){
+        return (x == oc.x && y == oc.y);
+    }
+    bool operator!=(ObjectCoord oc){
+        return !(operator==(oc));
     }
 };
 

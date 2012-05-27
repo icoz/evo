@@ -59,7 +59,7 @@ QImage Map::getImage()
     for (int i=0; i<MAP_X_SIZE; i++)
         for (int j=0; j<MAP_Y_SIZE; j++){
             QColor c;
-            switch (ObjectType(map[i][j])){
+            switch (ObjectType(map[i][MAP_Y_SIZE - j])){
             case otNone:
                 c = Qt::white;
                 break;
