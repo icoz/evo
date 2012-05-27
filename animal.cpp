@@ -85,19 +85,35 @@ void Animal::run()
             (mem_ptr == mem.size()) ? 0 : mem_ptr++;
             break;
         case save_to_mem:
+            if (mem.size() < mem_ptr)
+                for (int i = 0; i < mem_ptr - mem.size(); i++)
+                    mem.append(0);
             mem[mem_ptr] = data;
             break;
         case load_from_mem:
+            if (mem.size() < mem_ptr)
+                for (int i = 0; i < mem_ptr - mem.size(); i++)
+                    mem.append(0);
             data = mem[mem_ptr];
             break;
         case add_mem:
+            if (mem.size() < mem_ptr)
+                for (int i = 0; i < mem_ptr - mem.size(); i++)
+                    mem.append(0);
             data += mem[mem_ptr];
             break;
         case sub_mem:
+            if (mem.size() < mem_ptr)
+                for (int i = 0; i < mem_ptr - mem.size(); i++)
+                    mem.append(0);
             data -= mem[mem_ptr];
             break;
         case set_mem_ptr:
             mem_ptr = data;
+            mem.reserve(mem_ptr);
+            if (mem.size() < mem_ptr)
+                for (int i = 0; i < mem_ptr - mem.size(); i++)
+                    mem.append(0);
             break;
         //data group
         case data_clear:
@@ -108,6 +124,7 @@ void Animal::run()
             break;
         case data_dec:
             data--;
+            if (data < 0) data = 0;
             break;
         //action group
         case action_move_left:
@@ -140,7 +157,7 @@ void Animal::run()
             break;
         }
     }
-    emit wait();
+    emit suicide();//kill myself, if i can't decide what to do!
 }
 
 void Animal::searchStart()
