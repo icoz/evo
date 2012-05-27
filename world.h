@@ -14,6 +14,7 @@ public:
 
     //ObjectType checkObjectCoord(ObjectCoord c);
     //EyeData getEye(ObjectCoord oc, Direction dir);
+    void addAnimal(Animal* ani);
     void addAnimal(QList<char> cmds,
                    QList<char> mems,
                    int cmd_start_ptr = 0,

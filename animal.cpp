@@ -1,6 +1,6 @@
 #include "animal.h"
-
-
+#include <QFile>
+#include <QDataStream>
 
 void Animal::onTick()
 {
@@ -176,4 +176,26 @@ QList<char> Animal::compile(QList<AnimalCommand> acmd)
         out.append((char) cmd);
     }
     return out;
+}
+
+Animal *Animal::loadAnimal(QString filename)
+{
+    QFile fin(filename);
+    if (!fin.open(QIODevice::ReadOnly)) return NULL;
+    QDataStream ds(&fin);
+    QList<char> cmds2,mems2;
+    quint32 cmd_ptr2,mem_ptr2;
+    //can't save lists TODO
+    ds >> cmds2 >> mems2 >> cmd_ptr2 >> mem_ptr2;
+    fin.close();
+    return new Animal(cmds2,mems2,cmd_ptr2,mem_ptr2);
+}
+
+void Animal::saveAnimal(QString filename, QList<char> cmds, QList<char> mems, int cmd_start_ptr, int mem_start_ptr)
+{
+    QFile fout(filename);
+    if (!fout.open(QIODevice::WriteOnly)) return;
+    QDataStream ds(&fout);
+    ds << cmds << mems << cmd_start_ptr << mem_start_ptr;
+    fout.close();
 }

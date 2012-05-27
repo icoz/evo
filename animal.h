@@ -18,8 +18,23 @@ public:
         : QObject(parent), map(mmap), cmd(cmds),
           mem(mems), cmd_ptr(cmd_start_ptr),
           mem_ptr(mem_start_ptr) { data = 0; searchStart();}
+    explicit Animal(QList<char> cmds,
+                    QList<char> mems,
+                    int cmd_start_ptr = 0,
+                    int mem_start_ptr = 0,
+                    QObject *parent = 0)
+        : QObject(parent), cmd(cmds),
+          mem(mems), cmd_ptr(cmd_start_ptr),
+          mem_ptr(mem_start_ptr) { data = 0; searchStart(); map = NULL;}
+    void setMap(Map* mmap) {map = mmap;}
 //static
     static QList<char> compile(QList<AnimalCommand> acmd);
+    static Animal* loadAnimal(QString filename);
+    static void saveAnimal(QString filename,
+                           QList<char> cmds,
+                           QList<char> mems,
+                           int cmd_start_ptr = 0,
+                           int mem_start_ptr = 0);
 
 signals:
     void move(Direction direction);
