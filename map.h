@@ -2,6 +2,7 @@
 #define MAP_H
 
 #include <QObject>
+#include <QImage>
 #include "common.h"
 
 class Map : public QObject
@@ -12,9 +13,12 @@ public:
     ObjectType getType(int x, int y);
     ObjectType getType(ObjectCoord oc);
     ObjectType getTypeNear(ObjectCoord oc, Direction dir);
-    char getDistance(ObjectCoord oc, Direction dir);
     bool coordIsValid(int x, int y);
     bool coordIsValid(ObjectCoord oc);
+    ObjectCoord correctCoord(ObjectCoord oc);
+    QImage getImage();
+    //char getDistance(ObjectCoord oc, Direction dir);
+    quint8 getDistance(ObjectCoord oc, Direction dir);
 signals:
 
 public slots:

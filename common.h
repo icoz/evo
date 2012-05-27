@@ -1,9 +1,12 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-enum Direction {left, right, up, down};
+#define MAP_X_SIZE 256
+#define MAP_Y_SIZE 256
 
-enum ObjectType {none = 0 , stone, food, animal};
+enum Direction {Left, Right, Up, Down};
+
+enum ObjectType {otNone = 0 , otStone, otFood, otAnimal};
 
 struct EyeData{
     char distance;
@@ -11,14 +14,19 @@ struct EyeData{
 };
 
 struct ObjectCoord {
-    int x,y;
+    qint32 x,y;
     ObjectCoord addDist(int distance, Direction dir){
         switch (dir){
-        case left: x -= distance; break;
-        case right: x += distance; break;
-        case up: y += distance; break;
-        case down: y -= distance; break;
+        case Left: x -= distance; break;
+        case Right: x += distance; break;
+        case Up: y += distance; break;
+        case Down: y -= distance; break;
         }
+        x %= 256;
+        y %= 256;
+        //if (x > 255) x = 0;
+        //if (y > 255) y = 0;
+        //if (x ) x = 0;
         return *this;
     }
 };

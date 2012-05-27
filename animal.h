@@ -5,6 +5,7 @@
 #include "common.h"
 #include "map.h"
 
+//todo union: char/enum
 enum AnimalCommand {
     //cmd group
     nop,            // no op
@@ -69,7 +70,9 @@ public:
                     QObject *parent = 0)
         : QObject(parent), map(mmap), cmd(cmds),
           mem(mems), cmd_ptr(cmd_start_ptr),
-          mem_ptr(mem_start_ptr) {searchStart();}
+          mem_ptr(mem_start_ptr) { data = 0; searchStart();}
+//static
+    static QList<char> compile(QList<AnimalCommand> acmd);
 
 signals:
     void move(Direction direction);
@@ -88,9 +91,11 @@ public slots:
     bool suicide();
     bool split(Direction direction);
     bool splitMutate(Direction direction);*/
+public:
+    ObjectCoord coord;
+
 protected:
     Map *map;
-    ObjectCoord coord;
     QList<char> cmd;   // code
     QList<char> mem;            // HDD
     char data;                  // RAM

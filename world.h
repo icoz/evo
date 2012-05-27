@@ -1,7 +1,7 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include <QObject>
+#include <QtCore>
 #include "common.h"
 #include "map.h"
 #include "animal.h"
@@ -13,11 +13,13 @@ public:
     explicit World(QObject *parent = 0): QObject(parent) {}
 
     //ObjectType checkObjectCoord(ObjectCoord c);
-    EyeData getEye(ObjectCoord oc, Direction dir);
+    //EyeData getEye(ObjectCoord oc, Direction dir);
     void addAnimal(QList<char> cmds,
                    QList<char> mems,
                    int cmd_start_ptr = 0,
                    int mem_start_ptr = 0);
+    QImage getImage();
+    void makeStep();
 
 signals:
     void tick();
@@ -37,7 +39,7 @@ public slots:
     void onSplit_Mutate(ObjectCoord obj, Direction direction);*/
 protected:
     Map map;
-    QList<Animal> anis;
+    QList<Animal*> anis;
 };
 
 #endif // WORLD_H
