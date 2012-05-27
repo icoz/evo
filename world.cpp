@@ -90,7 +90,7 @@ void World::onEat(Direction direction)
             break;
         case otNone:
         case otStone:
-            //You cannot eat on Stone or Animal!
+            //You cannot eat Stone!
             //map.moveObj(ani->coord, direction);
             //ani->coord.addDist(1,direction);
             break;
@@ -108,6 +108,7 @@ void World::onSuicide()
         Animal* ani = (Animal*) sender();
         map.deleteObj(ani->coord);
         anis.removeAll(ani);
+        qDebug("suicide :(");
     }
 }
 
