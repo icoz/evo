@@ -30,6 +30,7 @@ public:
 //static
     static QList<char> compile(QList<AnimalCommand> acmd);
     static Animal* loadAnimal(QString filename);
+    void saveAnimal(QString filename);
     static void saveAnimal(QString filename,
                            QList<char> cmds,
                            QList<char> mems,

@@ -184,11 +184,27 @@ Animal *Animal::loadAnimal(QString filename)
     if (!fin.open(QIODevice::ReadOnly)) return NULL;
     QDataStream ds(&fin);
     QList<char> cmds2,mems2;
-    quint32 cmd_ptr2,mem_ptr2;
+    quint32 cmd_ptr2,mem_ptr2, cmd_cnt, mem_cnt;
     //can't save lists TODO
-    ds >> cmds2 >> mems2 >> cmd_ptr2 >> mem_ptr2;
+    ds >> cmd_ptr2 >> mem_ptr2;
+    ds >> cmd_cnt; cmds2.reserve(cmd_cnt);//cmds2.size();
+    ds >> mem_cnt; mems2.reserve(mem_cnt);//mems.size();
+    quint8 c;
+    for (quint32 i=0; i<cmd_cnt; i++){
+        ds >> c;
+        cmds2.append(c);
+    }
+    for (quint32 i=0; i<mem_cnt; i++){
+        ds >> c;
+        mems2.append(c);
+    }
     fin.close();
-    return new Animal(cmds2,mems2,cmd_ptr2,mem_ptr2);
+    return (new Animal(cmds2,mems2,cmd_ptr2,mem_ptr2));
+}
+
+void Animal::saveAnimal(QString filename)
+{
+    saveAnimal(filename,cmd,mem,cmd_ptr,mem_ptr);
 }
 
 void Animal::saveAnimal(QString filename, QList<char> cmds, QList<char> mems, int cmd_start_ptr, int mem_start_ptr)
@@ -196,6 +212,11 @@ void Animal::saveAnimal(QString filename, QList<char> cmds, QList<char> mems, in
     QFile fout(filename);
     if (!fout.open(QIODevice::WriteOnly)) return;
     QDataStream ds(&fout);
-    ds << cmds << mems << cmd_start_ptr << mem_start_ptr;
+    //ds << cmds << mems << cmd_start_ptr << mem_start_ptr;
+    ds << cmd_start_ptr << mem_start_ptr;
+    ds << cmds.size();
+    ds << mems.size();
+    foreach (quint8 c, cmds) ds << c;
+    foreach (quint8 c, mems) ds << c;
     fout.close();
 }
