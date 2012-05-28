@@ -88,11 +88,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QList<char> cmds2 = Animal::compile(c2);
     QList<char> cmds3 = Animal::compile(c3);
     QList<char> mems;
+    Animal::saveAnimal("c1.ani",cmds,mems);
+    Animal::saveAnimal("c2.ani",cmds2,mems);
     mems << 10 << 0 << 0;
+    Animal::saveAnimal("c3.ani",cmds3,mems);
     for (int i=0; i < 50; i++){
-        w.addAnimal(cmds,mems);
+/*        w.addAnimal(cmds,mems);
         w.addAnimal(cmds2,mems);
-        w.addAnimal(cmds3,mems);
+        w.addAnimal(cmds3,mems);//*/
+/*        Animal* a1 = Animal::loadAnimal("c1.ani");
+        Animal* a2 = Animal::loadAnimal("c2.ani");
+        Animal* a3 = Animal::loadAnimal("c3.ani");
+        w.addAnimal(a1);
+        w.addAnimal(a2);
+        w.addAnimal(a3);//*/
+        w.addAnimal(Animal::loadAnimal("c1.ani"));
+        w.addAnimal(Animal::loadAnimal("c2.ani"));
+        w.addAnimal(Animal::loadAnimal("c3.ani"));//*/
     }
     tmr.setInterval(50);
     connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
