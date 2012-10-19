@@ -7,6 +7,40 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     //World w;
+    //qsrand()
+    for (int i=0; i < 50; i++){
+        generateAnimal();
+        w.addAnimal(Animal::loadAnimal("rnd.ani"));
+    }
+    //loadAnimals();
+    tmr.setInterval(50);
+    connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::onTimerTimeout()
+{
+    //qDebug("time!");
+    w.makeStep();
+    ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
+}
+
+void MainWindow::on_btnStart_clicked()
+{
+    tmr.start();
+}
+
+void MainWindow::on_btnStop_clicked()
+{
+    tmr.stop();
+}
+
+void MainWindow::createAndSaveAnimals()
+{
     QList<AnimalCommand> c,c2,c3;
     c << start
       << action_move_left
@@ -92,42 +126,30 @@ MainWindow::MainWindow(QWidget *parent) :
     Animal::saveAnimal("c2.ani",cmds2,mems);
     mems << 10 << 0 << 0;
     Animal::saveAnimal("c3.ani",cmds3,mems);
+}
+
+void MainWindow::loadAnimals()
+{
     for (int i=0; i < 50; i++){
-/*        w.addAnimal(cmds,mems);
-        w.addAnimal(cmds2,mems);
-        w.addAnimal(cmds3,mems);//*/
-/*        Animal* a1 = Animal::loadAnimal("c1.ani");
-        Animal* a2 = Animal::loadAnimal("c2.ani");
-        Animal* a3 = Animal::loadAnimal("c3.ani");
-        w.addAnimal(a1);
-        w.addAnimal(a2);
-        w.addAnimal(a3);//*/
         w.addAnimal(Animal::loadAnimal("c1.ani"));
         w.addAnimal(Animal::loadAnimal("c2.ani"));
-        w.addAnimal(Animal::loadAnimal("c3.ani"));//*/
+        w.addAnimal(Animal::loadAnimal("c3.ani"));
     }
-    tmr.setInterval(50);
-    connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
 }
 
-MainWindow::~MainWindow()
+void MainWindow::generateAnimal()
 {
-    delete ui;
-}
-
-void MainWindow::onTimerTimeout()
-{
-    //qDebug("time!");
-    w.makeStep();
-    ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
-}
-
-void MainWindow::on_btnStart_clicked()
-{
-    tmr.start();
-}
-
-void MainWindow::on_btnStop_clicked()
-{
-    tmr.stop();
+    QList<AnimalCommand> cmd;
+    quint8 i, maxCmd, maxMem;
+    maxCmd = qrand();
+    maxMem = qrand();
+    QList<char> mems;
+    for (i=0; i< maxCmd; i++){
+        cmd << AnimalCommand(qrand() % MAX_ANIMAL_COMMAND);
+        cmd << AnimalCommand(qrand() % sizeof(quint8));
+    }
+    for (i=0; i< maxMem; i++)
+        mems << char(qrand() % sizeof(quint8));
+    QList<char> cmds = Animal::compile(cmd);
+    Animal::saveAnimal("rnd.ani",cmds,mems);
 }
