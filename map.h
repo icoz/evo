@@ -27,7 +27,7 @@ public slots:
     void deleteObj(ObjectCoord oc);
 
 protected:
-    char map[256][256];
+    char map[MAP_X_SIZE][MAP_Y_SIZE];
 
 };
 
