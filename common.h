@@ -15,6 +15,8 @@ struct EyeData{
 
 struct ObjectCoord {
     qint32 x,y;
+    ObjectCoord(){x=0; y=0;}
+    ObjectCoord(qint32 _x, quint32 _y){x=_x; y=_y;}
     ObjectCoord addDist(int distance, Direction dir){
         switch (dir){
         case Left: x -= distance; break;
@@ -92,5 +94,6 @@ enum AnimalCommand {
     action_split_mutate
 };
 
+const int MAX_ANIMAL_COMMAND = int(action_split_mutate);
 
 #endif // COMMON_H
