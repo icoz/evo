@@ -36,6 +36,7 @@ public:
                            QList<char> mems,
                            int cmd_start_ptr = 0,
                            int mem_start_ptr = 0);
+    Animal* cloneAnimal();
 
 signals:
     void move(Direction direction);

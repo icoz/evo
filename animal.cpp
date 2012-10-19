@@ -1,6 +1,7 @@
 #include "animal.h"
 #include <QFile>
 #include <QDataStream>
+#include <QApplication>
 
 void Animal::onTick()
 {
@@ -10,6 +11,8 @@ void Animal::onTick()
 void Animal::run()
 {
     int i = 10000;
+    Direction dir;
+    qApp->processEvents();
     while (i-- > 0) {
         if (cmd_ptr == cmd.size()) {
             cmd_ptr = 0;
@@ -148,11 +151,17 @@ void Animal::run()
         case action_suicide:
             emit suicide(); return; break;
         case action_split:
-            //emit split();
+            dir = Direction(qrand() % 4);
+            emit split(dir);
+//            emit split(Right);
+//            emit split(Up);
+//            emit split(Down);
             return; break;
         case action_split_mutate:
             //emit splitMutate();
             return; break;
+        start:
+        nop:
         default: //nop,start
             break;
         }
@@ -219,4 +228,9 @@ void Animal::saveAnimal(QString filename, QList<char> cmds, QList<char> mems, in
     foreach (quint8 c, cmds) ds << c;
     foreach (quint8 c, mems) ds << c;
     fout.close();
+}
+
+Animal *Animal::cloneAnimal()
+{
+    return new Animal(this->cmd,this->mem,0,0);
 }
