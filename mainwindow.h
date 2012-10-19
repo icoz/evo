@@ -26,7 +26,7 @@ private:
     Ui::MainWindow *ui;
     World w;
     QTimer tmr;
-    void createAndSaveAnimals();
+    void createAndSaveTestAnimals();
     void loadAnimals();
     void generateAnimal();
 };

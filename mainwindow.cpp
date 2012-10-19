@@ -37,9 +37,10 @@ void MainWindow::on_btnStart_clicked()
 void MainWindow::on_btnStop_clicked()
 {
     tmr.stop();
+    QDebug("MainWindow: timer is stopped.");
 }
 
-void MainWindow::createAndSaveAnimals()
+void MainWindow::createAndSaveTestAnimals()
 {
     QList<AnimalCommand> c,c2,c3;
     c << start
