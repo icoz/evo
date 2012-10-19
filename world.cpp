@@ -11,7 +11,7 @@
 }*/
 
 
-void World::addAnimal(Animal *ani)
+void World::addAnimal(Animal *ani, ObjectCoord coord_start)
 {
     ani->setParent(this);
     ani->setMap(&map);
@@ -24,10 +24,13 @@ void World::addAnimal(Animal *ani)
 //    connect(ani,SIGNAL(),SLOT());
 //    connect(ani,SIGNAL(),SLOT());
     connect(this,SIGNAL(tick()),ani,SLOT(onTick()));
-    do {
-        ani->coord.x = qrand() % MAP_X_SIZE;
-        ani->coord.y = qrand() % MAP_Y_SIZE;
-    } while (map.getType(ani->coord) == otAnimal);
+    if ((coord_start.x != -1) && (coord_start.y != -1)){
+    }else{
+        do {
+            ani->coord.x = qrand() % MAP_X_SIZE;
+            ani->coord.y = qrand() % MAP_Y_SIZE;
+        } while (map.getType(ani->coord) == otAnimal);
+    }
     map.createObj(ani->coord, otAnimal);
     anis.append(ani);
 }
@@ -35,10 +38,10 @@ void World::addAnimal(Animal *ani)
 void World::addAnimal(QList<char> cmds,
                    QList<char> mems,
                    int cmd_start_ptr,
-                   int mem_start_ptr)
+                   int mem_start_ptr, ObjectCoord coord_start)
 {
     Animal* ani = new Animal(&map,cmds,mems,cmd_start_ptr,mem_start_ptr,this);
-    addAnimal(ani);
+    addAnimal(ani,coord_start);
 }
 
 QImage World::getImage()
@@ -87,12 +90,13 @@ void World::onEat(Direction direction)
             //qDebug("eat! :)");
             break;
         case otAnimal:
-            qDebug("eat animal! :)");
+            //qDebug("eat animal! :)");
             ani->food += 100;
             //delete animal
             {
                 Animal* ani2=findAnimalByCoord(oc);
-                anis.removeAll(ani2);
+                if (ani2 != NULL)
+                    anis.removeAll(ani2);
             }
             map.deleteObj(oc);
             break;
@@ -122,6 +126,29 @@ void World::onSuicide()
 
 void World::onSplit(Direction direction)
 {
+    if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
+        Animal* ani = (Animal*) sender();
+        ObjectCoord oc = ani->coord;
+        oc.addDist(1,direction);
+        if (map.coordIsValid(oc)) oc = map.correctCoord(oc);
+        switch (map.getType(oc)){
+        case otNone:
+        case otFood: //food will be destroyed
+            map.deleteObj(oc);
+            if (ani->food > 10){
+                //addAnimal(ani->cmd, ani->mem);
+                Animal *new_ani = ani->cloneAnimal();
+                addAnimal(new_ani,oc);
+                ani->food -= 10;
+                qDebug("split! :)");
+            }
+            break;
+        case otAnimal:
+        case otStone:
+            //You cannot split on Stone and Animal!
+            break;
+        }
+    }
 }
 
 void World::onSplit_Mutate(Direction direction)
