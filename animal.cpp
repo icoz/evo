@@ -1,7 +1,6 @@
 #include "animal.h"
 #include <QFile>
 #include <QDataStream>
-#include <QApplication>
 
 void Animal::onTick()
 {
@@ -10,9 +9,8 @@ void Animal::onTick()
 
 void Animal::run()
 {
-    int i = 10000;
+    int i = MAX_STEPS;
     Direction dir;
-    qApp->processEvents();
     while (i-- > 0) {
         if (cmd_ptr == cmd.size()) {
             cmd_ptr = 0;

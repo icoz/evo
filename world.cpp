@@ -1,5 +1,5 @@
 #include "world.h"
-
+#include <QApplication>
 
 
 /*EyeData World::getEye(ObjectCoord oc, Direction dir)
@@ -51,6 +51,7 @@ QImage World::getImage()
 
 void World::makeStep()
 {
+    qApp->processEvents();
     emit tick();
 }
 

@@ -5,6 +5,8 @@
 #include "common.h"
 #include "map.h"
 
+const quint32 MAX_STEPS = 1000;
+
 class Animal : public QObject
 {
     Q_OBJECT
