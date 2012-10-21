@@ -158,8 +158,8 @@ void Animal::run()
         case action_split_mutate:
             //emit splitMutate();
             return; break;
-        start:
-        nop:
+        case start:
+        case nop:
         default: //nop,start
             break;
         }
@@ -170,8 +170,10 @@ void Animal::run()
 void Animal::searchStart()
 {
     if (cmd_ptr == cmd.size()) cmd_ptr = 0;
-    while ((AnimalCommand(cmd.at(cmd_ptr++)) != start) || (cmd_ptr == cmd.size())) {}
-    if (cmd_ptr == cmd.size()) cmd_ptr = 0;
+    //while ((AnimalCommand(cmd.at(cmd_ptr++)) != start) || (cmd_ptr == cmd.size())) {}
+    //while ((cmd_ptr != cmd.size()) || (AnimalCommand(cmd.at(cmd_ptr++)) != start)) {}
+    cmd_ptr = cmd.indexOf(start);
+    if (cmd_ptr == -1) cmd_ptr = 0;
 }
 
 
