@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+// limited to 256, due Map::getDistance()
 #define MAP_X_SIZE 256
 #define MAP_Y_SIZE 256
 
