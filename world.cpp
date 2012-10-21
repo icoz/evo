@@ -144,6 +144,8 @@ void World::onSuicide()
         if (ani != NULL){
             map.deleteObj(ani->coord);
             anis.removeAll(ani);
+            ani->disconnect(this);
+            disconnect(this,SIGNAL(tick()),ani,SLOT(onTick()));
             delete ani;
             //qDebug("suicide :(");
         }
@@ -167,11 +169,11 @@ void World::onSplit(Direction direction)
         case otNone:
         case otFood: //food will be destroyed
             map.deleteObj(oc);
-            if (ani->food > 100){
+            if (ani->food > 1000){
                 //addAnimal(ani->cmd, ani->mem);
                 Animal *new_ani = ani->cloneAnimal();
                 addAnimal(new_ani,oc);
-                ani->food -= 100;
+                ani->food -= 1000;
                 qDebug("split! :)");
             }
             break;
