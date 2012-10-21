@@ -8,13 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //World w;
     //qsrand()
-    for (int i=0; i < 500; i++){
+    for (int i=0; i < 50; i++){
         //generateAndSaveAnimal();
         //w.addAnimal(Animal::loadAnimal("rnd.ani"));
         w.addAnimal(generateAnimal());
     }
-    //loadAnimals();
-    tmr.setInterval(50);
+    loadAnimals();
+    tmr.setInterval(500);
     connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
 }
 
@@ -26,19 +26,34 @@ MainWindow::~MainWindow()
 void MainWindow::onTimerTimeout()
 {
     //qDebug("time!");
+    tmr.stop();
     w.makeStep();
+    qApp->sendPostedEvents();
+    qApp->processEvents();
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
+    if (w.getAnimalCount() < 15){ // if we have less then 15 animals then generate new!
+        for (int i=0; i < 50; i++){
+            w.addAnimal(generateAnimal());
+        }
+    }
+    if (!timer_stop){
+        tmr.start();
+    }
+    //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
 }
 
 void MainWindow::on_btnStart_clicked()
 {
     tmr.start();
+    timer_stop = false;
+    //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
 }
 
 void MainWindow::on_btnStop_clicked()
 {
-    tmr.stop();
+    timer_stop = true;
+    //tmr.stop();
     qDebug("MainWindow: timer is stopped.");
 }
 
