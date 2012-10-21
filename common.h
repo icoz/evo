@@ -94,6 +94,6 @@ enum AnimalCommand {
     action_split_mutate
 };
 
-const int MAX_ANIMAL_COMMAND = int(action_split_mutate);
+const int MAX_ANIMAL_COMMAND = int(action_split_mutate)+1;
 
 #endif // COMMON_H
