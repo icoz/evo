@@ -119,9 +119,12 @@ void World::onSuicide()
 {
     if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
         Animal* ani = (Animal*) sender();
-        map.deleteObj(ani->coord);
-        anis.removeAll(ani);
-        qDebug("suicide :(");
+        if (ani != NULL){
+            map.deleteObj(ani->coord);
+            anis.removeAll(ani);
+            delete ani;
+            qDebug("suicide :(");
+        }
     }
 }
 
