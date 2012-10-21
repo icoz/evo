@@ -13,26 +13,30 @@
 
 void World::addAnimal(Animal *ani, ObjectCoord coord_start)
 {
-    ani->setParent(this);
-    ani->setMap(&map);
-    connect(ani,SIGNAL(move(Direction)),SLOT(onMove(Direction)));
-    connect(ani,SIGNAL(eat(Direction)),SLOT(onEat(Direction)));
-    connect(ani,SIGNAL(suicide()),SLOT(onSuicide()));
-    connect(ani,SIGNAL(wait()),SLOT(onWait()));
-    connect(ani,SIGNAL(split(Direction)),SLOT(onSplit(Direction)));
-    connect(ani,SIGNAL(splitMutate(Direction)),SLOT(onSplit_Mutate(Direction)));
-//    connect(ani,SIGNAL(),SLOT());
-//    connect(ani,SIGNAL(),SLOT());
-    connect(this,SIGNAL(tick()),ani,SLOT(onTick()));
-    if ((coord_start.x != -1) && (coord_start.y != -1)){
-    }else{
-        do {
-            ani->coord.x = qrand() % MAP_X_SIZE;
-            ani->coord.y = qrand() % MAP_Y_SIZE;
-        } while (map.getType(ani->coord) == otAnimal);
+    if (ani != NULL){
+        ani->setParent(this);
+        ani->setMap(&map);
+        connect(ani,SIGNAL(move(Direction)),SLOT(onMove(Direction)));
+        connect(ani,SIGNAL(eat(Direction)),SLOT(onEat(Direction)));
+        connect(ani,SIGNAL(suicide()),SLOT(onSuicide()));
+        connect(ani,SIGNAL(wait()),SLOT(onWait()));
+        connect(ani,SIGNAL(split(Direction)),SLOT(onSplit(Direction)));
+        connect(ani,SIGNAL(splitMutate(Direction)),SLOT(onSplit_Mutate(Direction)));
+    //    connect(ani,SIGNAL(),SLOT());
+    //    connect(ani,SIGNAL(),SLOT());
+        connect(this,SIGNAL(tick()),ani,SLOT(onTick()));
+        if ((coord_start.x != -1) && (coord_start.y != -1)){
+            ani->coord.x = coord_start.x;
+            ani->coord.y = coord_start.y;
+        }else{
+            do {
+                ani->coord.x = qrand() % MAP_X_SIZE;
+                ani->coord.y = qrand() % MAP_Y_SIZE;
+            } while (map.getType(ani->coord) == otAnimal);
+        }
+        map.createObj(ani->coord, otAnimal);
+        anis.append(ani);
     }
-    map.createObj(ani->coord, otAnimal);
-    anis.append(ani);
 }
 
 void World::addAnimal(QList<char> cmds,
