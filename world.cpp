@@ -39,8 +39,8 @@ void World::addAnimal(Animal *ani, ObjectCoord coord_start)
     }
 }
 
-void World::addAnimal(QList<char> cmds,
-                   QList<char> mems,
+void World::addAnimal(QList<quint8> cmds,
+                   QList<quint8> mems,
                    int cmd_start_ptr,
                    int mem_start_ptr, ObjectCoord coord_start)
 {
@@ -64,6 +64,12 @@ void World::onMove(Direction direction)
     //qDebug("world::onmove(): class-sender = %s",sender()->metaObject()->className());
     if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
         Animal* ani = (Animal*) sender();
+        if (ani == NULL) return;
+        ani->food--;
+        if (ani->food < 0){
+            onSuicide();
+            return;
+        }
         ObjectCoord oc = ani->coord;
         oc.addDist(1,direction);
         if (map.coordIsValid(oc)) oc = map.correctCoord(oc);
@@ -85,18 +91,21 @@ void World::onEat(Direction direction)
 {
     if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
         Animal* ani = (Animal*) sender();
+        if (ani == NULL) return;
+        ani->food--;
+        //suicide later, give chance to eat
         ObjectCoord oc = ani->coord;
         oc.addDist(1,direction);
         if (map.coordIsValid(oc)) oc = map.correctCoord(oc);
         switch (map.getType(oc)){
         case otFood: //food will be destroyed
-            ani->food++;
+            ani->food += 100;
             map.deleteObj(oc);
             //qDebug("eat! :)");
             break;
         case otAnimal:
             //qDebug("eat animal! :)");
-            ani->food += 100;
+            ani->food += 1000;
             //delete animal
             {
                 Animal* ani2=findAnimalByCoord(oc);
@@ -112,11 +121,20 @@ void World::onEat(Direction direction)
             //ani->coord.addDist(1,direction);
             break;
         }
+        if (ani->food < 0){
+            onSuicide();
+            return;
+        }
     }
 }
 
 void World::onWait()
 {
+    if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
+        Animal* ani = (Animal*) sender();
+        if (ani != NULL)
+            ani->food--;
+    }
 }
 
 void World::onSuicide()
@@ -127,7 +145,7 @@ void World::onSuicide()
             map.deleteObj(ani->coord);
             anis.removeAll(ani);
             delete ani;
-            qDebug("suicide :(");
+            //qDebug("suicide :(");
         }
     }
 }
@@ -136,6 +154,12 @@ void World::onSplit(Direction direction)
 {
     if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
         Animal* ani = (Animal*) sender();
+        if (ani == NULL) return;
+        ani->food--;
+        if (ani->food < 0){
+            onSuicide();
+            return;
+        }
         ObjectCoord oc = ani->coord;
         oc.addDist(1,direction);
         if (map.coordIsValid(oc)) oc = map.correctCoord(oc);
@@ -143,11 +167,11 @@ void World::onSplit(Direction direction)
         case otNone:
         case otFood: //food will be destroyed
             map.deleteObj(oc);
-            if (ani->food > 10){
+            if (ani->food > 100){
                 //addAnimal(ani->cmd, ani->mem);
                 Animal *new_ani = ani->cloneAnimal();
                 addAnimal(new_ani,oc);
-                ani->food -= 10;
+                ani->food -= 100;
                 qDebug("split! :)");
             }
             break;

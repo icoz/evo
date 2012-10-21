@@ -28,7 +28,8 @@ private:
     QTimer tmr;
     void createAndSaveTestAnimals();
     void loadAnimals();
-    void generateAnimal();
+    void generateAndSaveAnimal();
+    Animal* generateAnimal();
 };
 
 #endif // MAINWINDOW_H

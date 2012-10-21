@@ -86,35 +86,25 @@ void Animal::run()
             (mem_ptr == mem.size()) ? 0 : mem_ptr++;
             break;
         case save_to_mem:
-            if (mem.size() < mem_ptr)
-                for (int i = 0; i < mem_ptr - mem.size(); i++)
-                    mem.append(0);
+            checkMemSize(mem_ptr, true);
             mem[mem_ptr] = data;
             break;
         case load_from_mem:
-            if (mem.size() < mem_ptr)
-                for (int i = 0; i < mem_ptr - mem.size(); i++)
-                    mem.append(0);
+            checkMemSize(mem_ptr, true);
             data = mem[mem_ptr];
             break;
         case add_mem:
-            if (mem.size() < mem_ptr)
-                for (int i = 0; i < mem_ptr - mem.size(); i++)
-                    mem.append(0);
+            checkMemSize(mem_ptr, true);
             data += mem[mem_ptr];
             break;
         case sub_mem:
-            if (mem.size() < mem_ptr)
-                for (int i = 0; i < mem_ptr - mem.size(); i++)
-                    mem.append(0);
+            checkMemSize(mem_ptr, true);
             data -= mem[mem_ptr];
             break;
         case set_mem_ptr:
             mem_ptr = data;
             mem.reserve(mem_ptr);
-            if (mem.size() < mem_ptr)
-                for (int i = 0; i < mem_ptr - mem.size(); i++)
-                    mem.append(0);
+            checkMemSize(mem_ptr, true);
             break;
         //data group
         case data_clear:
@@ -125,7 +115,7 @@ void Animal::run()
             break;
         case data_dec:
             data--;
-            if (data < 0) data = 0;
+            //if (data < 0) data = 0;
             break;
         //action group
         case action_move_left:
@@ -169,6 +159,11 @@ void Animal::run()
 
 void Animal::searchStart()
 {
+    if (cmd.size() == 0){
+        cmd.append(char(action_suicide));
+        cmd_ptr = 0;
+        return;
+    }
     if (cmd_ptr == cmd.size()) cmd_ptr = 0;
     //while ((AnimalCommand(cmd.at(cmd_ptr++)) != start) || (cmd_ptr == cmd.size())) {}
     //while ((cmd_ptr != cmd.size()) || (AnimalCommand(cmd.at(cmd_ptr++)) != start)) {}
@@ -176,10 +171,25 @@ void Animal::searchStart()
     if (cmd_ptr == -1) cmd_ptr = 0;
 }
 
-
-QList<char> Animal::compile(QList<AnimalCommand> acmd)
+inline bool Animal::checkMemSize(int mem_size, bool expand)
 {
-    QList<char> out;
+    if (expand){
+        if (mem.size() < mem_size+1){
+            mem.reserve(mem_size+1);
+            int count = mem_size - mem.size() + 1;
+            for (int i = 0; i < count; i++)
+                mem.append(0);
+        }
+        return true;
+    }
+    else
+        return (mem.size() < mem_size+1);
+}
+
+
+QList<quint8> Animal::compile(QList<AnimalCommand> acmd)
+{
+    QList<quint8> out;
     AnimalCommand cmd;
     foreach (cmd,acmd){
         out.append((char) cmd);
@@ -192,7 +202,7 @@ Animal *Animal::loadAnimal(QString filename)
     QFile fin(filename);
     if (!fin.open(QIODevice::ReadOnly)) return NULL;
     QDataStream ds(&fin);
-    QList<char> cmds2,mems2;
+    QList<quint8> cmds2,mems2;
     quint32 cmd_ptr2,mem_ptr2, cmd_cnt, mem_cnt;
     //can't save lists TODO
     ds >> cmd_ptr2 >> mem_ptr2;
@@ -208,6 +218,7 @@ Animal *Animal::loadAnimal(QString filename)
         mems2.append(c);
     }
     fin.close();
+    if (cmds2.size() == 0) return NULL;
     return (new Animal(cmds2,mems2,cmd_ptr2,mem_ptr2));
 }
 
@@ -216,7 +227,7 @@ void Animal::saveAnimal(QString filename)
     saveAnimal(filename,cmd,mem,cmd_ptr,mem_ptr);
 }
 
-void Animal::saveAnimal(QString filename, QList<char> cmds, QList<char> mems, int cmd_start_ptr, int mem_start_ptr)
+void Animal::saveAnimal(QString filename, QList<quint8> cmds, QList<quint8> mems, int cmd_start_ptr, int mem_start_ptr)
 {
     QFile fout(filename);
     if (!fout.open(QIODevice::WriteOnly)) return;

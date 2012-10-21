@@ -8,9 +8,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //World w;
     //qsrand()
-    for (int i=0; i < 50; i++){
-        generateAnimal();
-        w.addAnimal(Animal::loadAnimal("rnd.ani"));
+    for (int i=0; i < 500; i++){
+        //generateAndSaveAnimal();
+        //w.addAnimal(Animal::loadAnimal("rnd.ani"));
+        w.addAnimal(generateAnimal());
     }
     //loadAnimals();
     tmr.setInterval(50);
@@ -27,6 +28,7 @@ void MainWindow::onTimerTimeout()
     //qDebug("time!");
     w.makeStep();
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
+    ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
 }
 
 void MainWindow::on_btnStart_clicked()
@@ -119,10 +121,10 @@ void MainWindow::createAndSaveTestAnimals()
            << move_mem_left // restore var1
 //           << load_from_mem
        << end;
-    QList<char> cmds = Animal::compile(c);
-    QList<char> cmds2 = Animal::compile(c2);
-    QList<char> cmds3 = Animal::compile(c3);
-    QList<char> mems;
+    QList<quint8> cmds = Animal::compile(c);
+    QList<quint8> cmds2 = Animal::compile(c2);
+    QList<quint8> cmds3 = Animal::compile(c3);
+    QList<quint8> mems;
     Animal::saveAnimal("c1.ani",cmds,mems);
     Animal::saveAnimal("c2.ani",cmds2,mems);
     mems << 10 << 0 << 0;
@@ -138,19 +140,36 @@ void MainWindow::loadAnimals()
     }
 }
 
-void MainWindow::generateAnimal()
+void MainWindow::generateAndSaveAnimal()
 {
     QList<AnimalCommand> cmd;
     quint8 i, maxCmd, maxMem;
-    maxCmd = qrand();
-    maxMem = qrand();
-    QList<char> mems;
+    maxCmd = qrand()%1500 + 1;
+    maxMem = qrand()%1500 + 1;
+    QList<quint8> mems;
     for (i=0; i< maxCmd; i++){
         cmd << AnimalCommand(qrand() % MAX_ANIMAL_COMMAND);
         cmd << AnimalCommand(qrand() % sizeof(quint8));
     }
     for (i=0; i< maxMem; i++)
         mems << char(qrand() % sizeof(quint8));
-    QList<char> cmds = Animal::compile(cmd);
+    QList<quint8> cmds = Animal::compile(cmd);
     Animal::saveAnimal("rnd.ani",cmds,mems);
+}
+
+Animal *MainWindow::generateAnimal()
+{
+    QList<AnimalCommand> cmd;
+    quint8 i, maxCmd, maxMem;
+    maxCmd = qrand()%1500 + 1;
+    maxMem = qrand()%1500 + 1;
+    QList<quint8> mems;
+    for (i=0; i< maxCmd; i++){
+        cmd << AnimalCommand(qrand() % MAX_ANIMAL_COMMAND);
+        cmd << AnimalCommand(qrand() % sizeof(quint8));
+    }
+    for (i=0; i< maxMem; i++)
+        mems << char(qrand() % sizeof(quint8));
+    QList<quint8> cmds = Animal::compile(cmd);
+    return (new Animal(cmds,mems));
 }

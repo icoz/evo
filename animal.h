@@ -12,16 +12,16 @@ class Animal : public QObject
     Q_OBJECT
 public:
 //    explicit Animal(World *w, QObject *parent = 0): QObject(parent), world(w) {}
-    explicit Animal(Map *mmap, QList<char> cmds,
-                    QList<char> mems,
+    explicit Animal(Map *mmap, QList<quint8> cmds,
+                    QList<quint8> mems,
                     int cmd_start_ptr = 0,
                     int mem_start_ptr = 0,
                     QObject *parent = 0)
         : QObject(parent), map(mmap), cmd(cmds),
           mem(mems), cmd_ptr(cmd_start_ptr),
           mem_ptr(mem_start_ptr) { data = 0; searchStart();}
-    explicit Animal(QList<char> cmds,
-                    QList<char> mems,
+    explicit Animal(QList<quint8> cmds,
+                    QList<quint8> mems,
                     int cmd_start_ptr = 0,
                     int mem_start_ptr = 0,
                     QObject *parent = 0)
@@ -30,12 +30,12 @@ public:
           mem_ptr(mem_start_ptr) { data = 0; searchStart(); map = NULL;}
     void setMap(Map* mmap) {map = mmap;}
 //static
-    static QList<char> compile(QList<AnimalCommand> acmd);
+    static QList<quint8> compile(QList<AnimalCommand> acmd);
     static Animal* loadAnimal(QString filename);
     void saveAnimal(QString filename);
     static void saveAnimal(QString filename,
-                           QList<char> cmds,
-                           QList<char> mems,
+                           QList<quint8> cmds,
+                           QList<quint8> mems,
                            int cmd_start_ptr = 0,
                            int mem_start_ptr = 0);
     Animal* cloneAnimal();
@@ -63,14 +63,15 @@ public:
 
 protected:
     Map *map;
-    QList<char> cmd;   // code
-    QList<char> mem;            // HDD
-    char data;                  // RAM
+    QList<quint8> cmd;   // code
+    QList<quint8> mem;            // HDD
+    quint8 data;                  // RAM
     int cmd_ptr, //pointer to command cell
         mem_ptr; //pointer to memory cell
 
     void run();
     void searchStart();
+    bool checkMemSize(int mem_size, bool expand);
 };
 
 #endif // ANIMAL_H
