@@ -157,6 +157,7 @@ void World::onSplit(Direction direction)
 
 void World::onSplit_Mutate(Direction direction)
 {
+    Q_UNUSED(direction)
 }
 
 Animal *World::findAnimalByCoord(ObjectCoord oc)
