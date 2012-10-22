@@ -23,7 +23,7 @@ public:
     QImage getImage();
     void makeStep();
     int getAnimalCount() {return anis.size();}
-
+    void killAnimal(Animal* ani);
 signals:
     void tick();
 

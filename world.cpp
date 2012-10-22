@@ -112,8 +112,11 @@ void World::onEat(Direction direction)
             //delete animal
             {
                 Animal* ani2=findAnimalByCoord(oc);
-                if (ani2 != NULL)
-                    anis.removeAll(ani2);
+                if (ani2 != NULL){
+//                    anis.removeAll(ani2);
+                    qDebug(QString("(%1) kill (%2)").arg(ani->getID()).arg(ani2->getID()).toAscii().data());
+                    killAnimal(ani2);
+                }
             }
             map.deleteObj(oc);
             break;
@@ -147,11 +150,7 @@ void World::onSuicide()
         if (ani != NULL){
             //TODO: add stats
             qDebug(QString("(%1) suicide with fitness(%2), food(%3)").arg(ani->getID()).arg(ani->getFitness()).arg(ani->food).toAscii().data());
-            map.deleteObj(ani->coord);  // clean map
-            anis.removeAll(ani);        // remove ani from lives animals
-            ani->disconnect(this);      // disconnect ani from world
-            disconnect(this,SIGNAL(tick()),ani,SLOT(onTick()));
-            delete ani;                 // kill ani
+            killAnimal(ani);
         }
     }
 }
@@ -172,14 +171,13 @@ void World::onSplit(Direction direction)
         switch (map.getType(oc)){
         case otNone:
         case otFood: //food will be destroyed
-            map.deleteObj(oc);
             if (ani->food > 1000){
-                //addAnimal(ani->cmd, ani->mem);
+                map.deleteObj(oc);
                 ani->fitnessUp(50);
                 Animal *new_ani = ani->cloneAnimal();
                 addAnimal(new_ani,oc);
+                qDebug(QString("(%1), food(%2), fitness(%3) splitted to (%4)").arg(ani->getID()).arg(ani->food).arg(ani->getFitness()).arg(new_ani->getID()).toAscii().data());
                 ani->food -= 1000;
-                qDebug(QString("(%1) splitted to (%2)").arg(ani->getID()).arg(new_ani->getID()).toAscii().data());
             }
             break;
         case otAnimal:
@@ -204,3 +202,14 @@ Animal *World::findAnimalByCoord(ObjectCoord oc)
     return NULL;
 }
 
+void World::killAnimal(Animal *ani)
+{
+    if (ani != NULL){
+        qDebug(QString("(%1) fitness(%2), food(%3) is dead").arg(ani->getID()).arg(ani->getFitness()).arg(ani->food).toAscii().data());
+        map.deleteObj(ani->coord);  // clean map
+        anis.removeAll(ani);        // remove ani from lives animals
+        ani->disconnect(this);      // disconnect ani from world
+        disconnect(this,SIGNAL(tick()),ani,SLOT(onTick()));
+        delete ani;                 // kill ani
+    }
+}
