@@ -9,7 +9,8 @@ World::World(QObject *parent): QObject(parent), current_ID(1), best_animal(NULL)
 World::~World()
 {
     if (best_animal != NULL){
-        best_animal->saveAnimal(QString("best_%1.ani").arg(best_animal->getID()));
+        qDebug(QString("Best animal (%1) stored with fitness (%2)").arg(best_animal->getID()).arg(best_fitness).toAscii().data());
+        best_animal->saveAnimal(QString("best_id%1_fit%2.ani").arg(best_animal->getID()).arg(best_fitness));
         delete best_animal;
     }
 }
