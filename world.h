@@ -23,7 +23,7 @@ public:
     QImage getImage();
     void makeStep();
     int getAnimalCount() {return anis.size();}
-    quint32 getBestAnimalID(){ return best_animal->getID();}
+    quint32 getBestAnimalID(){ if (best_animal == NULL) return 0; return best_animal->getID();}
     quint32 getBestAnimalFitness(){ return best_fitness; }
     void killAnimal(Animal* ani);
 signals:

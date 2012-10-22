@@ -220,6 +220,7 @@ void World::killAnimal(Animal *ani)
     if (ani != NULL){
         if (ani->getFitness() > best_fitness){ // store best animal
             if (best_animal != NULL) delete best_animal;
+            best_fitness = ani->getFitness();
             best_animal = ani->cloneAnimal();
             best_animal->setID(ani->getID());
         }
