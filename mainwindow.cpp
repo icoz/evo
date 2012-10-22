@@ -47,6 +47,8 @@ void MainWindow::onTmrRunTimeout()
             w.addAnimal(generateAnimal());
         }
     }
+    if (w.getAnimalCount() > 1500)
+        w.killWeakAnimals();
     if (!timer_stop){
         tmr_run.start();
     }
