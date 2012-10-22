@@ -38,6 +38,7 @@ public slots:
     void onSplit(Direction direction);
     void onSplit_Mutate(Direction direction);
     void feedAnimal();
+    void killWeakAnimals();
     /*void onMove(ObjectCoord obj, Direction direction);
     void onEat(ObjectCoord obj, Direction direction);
     void onWait(ObjectCoord obj);

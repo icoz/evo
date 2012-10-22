@@ -246,3 +246,13 @@ void World::feedAnimal()
 {
     map.addFood(qrand()%1000+100);
 }
+
+void World::killWeakAnimals()
+{
+    qDebug("kill weak animals!");
+    Animal* ani;
+    foreach (ani, anis){
+        if (ani->getFitness() == 0)
+            killAnimal(ani);
+    }
+}
