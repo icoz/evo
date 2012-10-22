@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //World w;
     //qsrand()
+    qsrand(QDateTime::currentDateTimeUtc().toMSecsSinceEpoch());
     for (int i=0; i < 150; i++){
         //generateAndSaveAnimal();
         //w.addAnimal(Animal::loadAnimal("rnd.ani"));
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
     tmr_food.setInterval(5000);
     connect(&tmr_food, SIGNAL(timeout()), &w, SLOT(feedAnimal()));
+    round_count = 0;
 }
 
 MainWindow::~MainWindow()
@@ -29,6 +31,7 @@ MainWindow::~MainWindow()
 void MainWindow::onTimerTimeout()
 {
     //qDebug("time!");
+    round_count++;
     tmr.stop();
     w.makeStep();
     qApp->sendPostedEvents();
@@ -36,6 +39,7 @@ void MainWindow::onTimerTimeout()
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
+    ui->lblTime->setText(QString("Rounds: %1").arg(round_count));
     if (w.getAnimalCount() < 50){ // if we have less then 15 animals then generate new!
         for (int i=0; i < 150; i++){
             w.addAnimal(generateAnimal());
@@ -50,6 +54,7 @@ void MainWindow::onTimerTimeout()
 void MainWindow::on_btnStart_clicked()
 {
     tmr.start();
+    tmr_food.start();
     timer_stop = false;
     //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
 }
@@ -57,6 +62,7 @@ void MainWindow::on_btnStart_clicked()
 void MainWindow::on_btnStop_clicked()
 {
     timer_stop = true;
+    tmr_food.stop();
     //tmr.stop();
     qDebug("MainWindow: timer is stopped.");
 }

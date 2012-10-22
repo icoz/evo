@@ -30,6 +30,7 @@ private:
     QTimer tmr;
     QTimer tmr_food;
     bool timer_stop;
+    quint32 round_count;
     void createAndSaveTestAnimals();
     void loadAnimals();
     void generateAndSaveAnimal();
