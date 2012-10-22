@@ -22,6 +22,8 @@ private slots:
 
     void on_btnStop_clicked();
 
+    void on_btnSaveBest_clicked();
+
 private:
     Ui::MainWindow *ui;
     World w;

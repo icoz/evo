@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //World w;
     //qsrand()
-    for (int i=0; i < 50; i++){
+    for (int i=0; i < 150; i++){
         //generateAndSaveAnimal();
         //w.addAnimal(Animal::loadAnimal("rnd.ani"));
         w.addAnimal(generateAnimal());
@@ -36,8 +36,8 @@ void MainWindow::onTimerTimeout()
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
-    if (w.getAnimalCount() < 15){ // if we have less then 15 animals then generate new!
-        for (int i=0; i < 50; i++){
+    if (w.getAnimalCount() < 50){ // if we have less then 15 animals then generate new!
+        for (int i=0; i < 150; i++){
             w.addAnimal(generateAnimal());
         }
     }
@@ -194,4 +194,9 @@ Animal *MainWindow::generateAnimal()
         mems << char(qrand() % sizeof(quint8));
     QList<quint8> cmds = Animal::compile(cmd);
     return (new Animal(cmds,mems));
+}
+
+void MainWindow::on_btnSaveBest_clicked()
+{
+    w.saveBestAnimal();
 }
