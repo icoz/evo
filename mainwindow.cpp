@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     tmr_new_anis.setInterval(15000);
     connect(&tmr_new_anis, SIGNAL(timeout()), SLOT(onTmrNewAniTimeout()));
     round_count = 0;
+    is_saving_pics = false;
 }
 
 MainWindow::~MainWindow()
@@ -39,6 +40,11 @@ void MainWindow::onTmrRunTimeout()
     qApp->sendPostedEvents();
     qApp->processEvents();
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
+    if (is_saving_pics){
+        if (!QDir().exists("pics"))
+            QDir().mkdir("pics");
+        ui->label->pixmap()->save(QString("pics/round_%1.png").arg(round_count));
+    }
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
     ui->lblTime->setText(QString("Rounds: %1").arg(round_count));
@@ -220,4 +226,14 @@ Animal *MainWindow::generateAnimal()
 void MainWindow::on_btnSaveBest_clicked()
 {
     w.saveBestAnimal();
+}
+
+void MainWindow::on_btnSavePics_clicked()
+{
+    if (is_saving_pics){//then stop saving
+        ui->btnSavePics->setText("Start saving pics!");
+    }else{//start saving pics
+        ui->btnSavePics->setText("Stop saving pics!");
+    }
+    is_saving_pics ^= true;
 }

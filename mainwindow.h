@@ -25,6 +25,8 @@ private slots:
 
     void on_btnSaveBest_clicked();
 
+    void on_btnSavePics_clicked();
+
 private:
     Ui::MainWindow *ui;
     World w;
@@ -32,6 +34,7 @@ private:
     QTimer tmr_food;
     QTimer tmr_new_anis;
     bool timer_stop;
+    bool is_saving_pics;
     quint32 round_count;
     void createAndSaveTestAnimals();
     void loadAnimals();
