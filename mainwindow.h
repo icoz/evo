@@ -27,7 +27,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     World w;
-    QTimer tmr;
+    QTimer tmr_run;
     QTimer tmr_food;
     bool timer_stop;
     quint32 round_count;

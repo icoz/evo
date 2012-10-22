@@ -16,9 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     createAndSaveTestAnimals();
     loadAnimals();
-    tmr.setInterval(100);
-    connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
-    tmr_food.setInterval(5000);
+    tmr_run.setInterval(100);
+    connect(&tmr_run, SIGNAL(timeout()), SLOT(onTimerTimeout()));
+    tmr_food.setInterval(10000);
     connect(&tmr_food, SIGNAL(timeout()), &w, SLOT(feedAnimal()));
     round_count = 0;
 }
@@ -32,7 +32,7 @@ void MainWindow::onTimerTimeout()
 {
     //qDebug("time!");
     round_count++;
-    tmr.stop();
+    tmr_run.stop();
     w.makeStep();
     qApp->sendPostedEvents();
     qApp->processEvents();
@@ -46,14 +46,14 @@ void MainWindow::onTimerTimeout()
         }
     }
     if (!timer_stop){
-        tmr.start();
+        tmr_run.start();
     }
     //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
 }
 
 void MainWindow::on_btnStart_clicked()
 {
-    tmr.start();
+    tmr_run.start();
     tmr_food.start();
     timer_stop = false;
     //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
