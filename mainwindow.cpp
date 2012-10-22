@@ -13,8 +13,9 @@ MainWindow::MainWindow(QWidget *parent) :
         //w.addAnimal(Animal::loadAnimal("rnd.ani"));
         w.addAnimal(generateAnimal());
     }
+    createAndSaveTestAnimals();
     loadAnimals();
-    tmr.setInterval(500);
+    tmr.setInterval(100);
     connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
 }
 
@@ -81,14 +82,17 @@ void MainWindow::createAndSaveTestAnimals()
       << action_eat_up
       << action_eat_left
       << action_eat_right
+      << action_split
       << end;
     c2 << start
       << action_eat_left
       << action_move_left
       << action_eat_down
       << action_move_down
+      << action_split
       << end;
     c3 << start // spiral
+       << action_split
        << load_from_mem //load from var1
        << move_mem_right //save var2
        << data_dec
