@@ -77,7 +77,9 @@ void MainWindow::on_btnStop_clicked()
     tmr_food.stop();
     tmr_new_anis.stop();
     //tmr.stop();
+#ifdef DEBUG
     qDebug("MainWindow: timer is stopped.");
+#endif
 }
 
 void MainWindow::createAndSaveTestAnimals()

@@ -8,8 +8,19 @@ World::World(QObject *parent): QObject(parent), current_ID(1), best_animal(NULL)
 
 World::~World()
 {
+    Animal* ani;
+    foreach (ani,anis){
+        if (ani->getFitness() > best_fitness){ // store best animal
+            if (best_animal != NULL) delete best_animal;
+            best_fitness = ani->getFitness();
+            best_animal = ani->cloneAnimal();
+            best_animal->setID(ani->getID());
+        }
+    }
     if (best_animal != NULL){
+#ifdef DEBUG
         qDebug(QString("Best animal (%1) stored with fitness (%2)").arg(best_animal->getID()).arg(best_fitness).toAscii().data());
+#endif
         //best_animal->saveAnimal(QString("best_id%1_fit%2.ani").arg(best_animal->getID()).arg(best_fitness));
         saveBestAnimal();
         delete best_animal;
@@ -136,7 +147,9 @@ void World::onEat(Direction direction)
                 Animal* ani2=findAnimalByCoord(oc);
                 if (ani2 != NULL){
 //                    anis.removeAll(ani2);
+#ifdef DEBUG
                     qDebug(QString("(%1) kill (%2)").arg(ani->getID()).arg(ani2->getID()).toAscii().data());
+#endif
                     killAnimal(ani2);
                 }
             }
@@ -198,7 +211,9 @@ void World::onSplit(Direction direction)
                 ani->fitnessUp(50);
                 Animal *new_ani = ani->cloneAnimal();
                 addAnimal(new_ani,oc);
+#ifdef DEBUG
                 qDebug(QString("(%1) fitness(%3), food(%2) splitted to (%4)").arg(ani->getID()).arg(ani->food).arg(ani->getFitness()).arg(new_ani->getID()).toAscii().data());
+#endif
                 ani->food -= 1000;
             }
             break;
@@ -233,7 +248,9 @@ void World::killAnimal(Animal *ani)
             best_animal = ani->cloneAnimal();
             best_animal->setID(ani->getID());
         }
+#ifdef DEBUG
         qDebug(QString("(%1) fitness(%2), food(%3) is dead").arg(ani->getID()).arg(ani->getFitness()).arg(ani->food).toAscii().data());
+#endif
         map.deleteObj(ani->coord);  // clean map
         anis.removeAll(ani);        // remove ani from lives animals
         ani->disconnect(this);      // disconnect ani from world
@@ -249,7 +266,9 @@ void World::feedAnimal()
 
 void World::killWeakAnimals()
 {
+#ifdef DEBUG
     qDebug("kill weak animals!");
+#endif
     Animal* ani;
     foreach (ani, anis){
         if (ani->getFitness() == 0)

@@ -5,6 +5,8 @@
 #define MAP_X_SIZE 256
 #define MAP_Y_SIZE 256
 
+#define DEBUG
+
 enum Direction {Left, Right, Up, Down};
 
 enum ObjectType {otNone = 0 , otStone, otFood, otAnimal};
