@@ -21,7 +21,6 @@ World::~World()
 #ifdef DEBUG
         qDebug(QString("Best animal (%1) stored with fitness (%2)").arg(best_animal->getID()).arg(best_fitness).toAscii().data());
 #endif
-        //best_animal->saveAnimal(QString("best_id%1_fit%2.ani").arg(best_animal->getID()).arg(best_fitness));
         saveBestAnimal();
         delete best_animal;
     }

@@ -6,12 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //World w;
-    //qsrand()
     qsrand(QDateTime::currentDateTimeUtc().toMSecsSinceEpoch());
+    //init
     for (int i=0; i < 150; i++){
-        //generateAndSaveAnimal();
-        //w.addAnimal(Animal::loadAnimal("rnd.ani"));
         w.addAnimal(generateAnimal());
     }
     //createAndSaveTestAnimals();
@@ -41,9 +38,9 @@ void MainWindow::onTmrRunTimeout()
     qApp->processEvents();
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
     if (is_saving_pics){
-        if (!QDir().exists("pics"))
-            QDir().mkdir("pics");
-        ui->label->pixmap()->save(QString("pics/round_%1.png").arg(round_count));
+        if (!QDir().exists(PICS_DIR))
+            QDir().mkdir(PICS_DIR);
+        ui->label->pixmap()->save(QString(PICS_DIR+"/round_%1.png").arg(round_count));
     }
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));

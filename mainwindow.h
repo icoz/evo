@@ -8,6 +8,8 @@ namespace Ui {
 class MainWindow;
 }
 
+#define PICS_DIR "pics"
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
