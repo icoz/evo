@@ -17,7 +17,8 @@ public:
     ~MainWindow();
 
 private slots:
-    void onTimerTimeout();
+    void onTmrRunTimeout();
+    void onTmrNewAniTimeout();
     void on_btnStart_clicked();
 
     void on_btnStop_clicked();
@@ -29,6 +30,7 @@ private:
     World w;
     QTimer tmr_run;
     QTimer tmr_food;
+    QTimer tmr_new_anis;
     bool timer_stop;
     quint32 round_count;
     void createAndSaveTestAnimals();

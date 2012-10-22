@@ -14,12 +14,14 @@ MainWindow::MainWindow(QWidget *parent) :
         //w.addAnimal(Animal::loadAnimal("rnd.ani"));
         w.addAnimal(generateAnimal());
     }
-    createAndSaveTestAnimals();
-    loadAnimals();
+    //createAndSaveTestAnimals();
+    //loadAnimals();
     tmr_run.setInterval(100);
-    connect(&tmr_run, SIGNAL(timeout()), SLOT(onTimerTimeout()));
+    connect(&tmr_run, SIGNAL(timeout()), SLOT(onTmrRunTimeout()));
     tmr_food.setInterval(10000);
     connect(&tmr_food, SIGNAL(timeout()), &w, SLOT(feedAnimal()));
+    tmr_new_anis.setInterval(15000);
+    connect(&tmr_new_anis, SIGNAL(timeout()), SLOT(onTmrNewAniTimeout()));
     round_count = 0;
 }
 
@@ -28,7 +30,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onTimerTimeout()
+void MainWindow::onTmrRunTimeout()
 {
     //qDebug("time!");
     round_count++;
@@ -40,7 +42,7 @@ void MainWindow::onTimerTimeout()
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
     ui->lblTime->setText(QString("Rounds: %1").arg(round_count));
-    if (w.getAnimalCount() < 50){ // if we have less then 15 animals then generate new!
+    if (w.getAnimalCount() < 50){ // if we have less then 50 animals then generate new!
         for (int i=0; i < 150; i++){
             w.addAnimal(generateAnimal());
         }
@@ -51,10 +53,18 @@ void MainWindow::onTimerTimeout()
     //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
 }
 
+void MainWindow::onTmrNewAniTimeout()
+{
+    for (int i=0; i < 150; i++){
+        w.addAnimal(generateAnimal());
+    }
+}
+
 void MainWindow::on_btnStart_clicked()
 {
     tmr_run.start();
     tmr_food.start();
+    tmr_new_anis.start();
     timer_stop = false;
     //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
 }
@@ -63,6 +73,7 @@ void MainWindow::on_btnStop_clicked()
 {
     timer_stop = true;
     tmr_food.stop();
+    tmr_new_anis.stop();
     //tmr.stop();
     qDebug("MainWindow: timer is stopped.");
 }
