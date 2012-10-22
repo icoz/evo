@@ -16,10 +16,7 @@ public:
                     QList<quint8> mems,
                     int cmd_start_ptr = 0,
                     int mem_start_ptr = 0,
-                    QObject *parent = 0)
-        : QObject(parent), map(mmap), cmd(cmds),
-          mem(mems), cmd_ptr(cmd_start_ptr),
-          mem_ptr(mem_start_ptr) { data = 0; searchStart();}
+                    QObject *parent = 0) { Animal(cmds,mems,cmd_start_ptr,mem_start_ptr,parent); map=mmap;}
     explicit Animal(QList<quint8> cmds,
                     QList<quint8> mems,
                     int cmd_start_ptr = 0,
@@ -27,7 +24,7 @@ public:
                     QObject *parent = 0)
         : QObject(parent), cmd(cmds),
           mem(mems), cmd_ptr(cmd_start_ptr),
-          mem_ptr(mem_start_ptr) { data = 0; searchStart(); map = NULL;}
+          mem_ptr(mem_start_ptr) { food = 750; fitness = 0; data = 0; searchStart(); map = NULL;}
     void setMap(Map* mmap) {map = mmap;}
 //static
     static QList<quint8> compile(QList<AnimalCommand> acmd);
@@ -39,7 +36,10 @@ public:
                            int cmd_start_ptr = 0,
                            int mem_start_ptr = 0);
     Animal* cloneAnimal();
-
+    quint32 getID() { return ID; }
+    void setID(quint32 _ID) { ID = _ID;}
+    void fitnessUp(quint32 up = 1) { fitness+=up; }
+    quint32 getFitness() { return fitness;}
 signals:
     void move(Direction direction);
     void eat(Direction direction);
@@ -62,6 +62,8 @@ public:
     int food;
 
 protected:
+    quint32 ID;
+    quint32 fitness;
     Map *map;
     QList<quint8> cmd;   // code
     QList<quint8> mem;            // HDD
