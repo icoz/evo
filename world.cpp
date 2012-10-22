@@ -2,6 +2,18 @@
 #include <QApplication>
 
 
+World::World(QObject *parent): QObject(parent), current_ID(1), best_animal(NULL), best_fitness(0)
+{
+}
+
+World::~World()
+{
+    if (best_animal != NULL){
+        best_animal->saveAnimal(QString("best_%1.ani").arg(best_animal->getID()));
+        delete best_animal;
+    }
+}
+
 /*EyeData World::getEye(ObjectCoord oc, Direction dir)
 {
     EyeData e;
@@ -176,7 +188,7 @@ void World::onSplit(Direction direction)
                 ani->fitnessUp(50);
                 Animal *new_ani = ani->cloneAnimal();
                 addAnimal(new_ani,oc);
-                qDebug(QString("(%1), food(%2), fitness(%3) splitted to (%4)").arg(ani->getID()).arg(ani->food).arg(ani->getFitness()).arg(new_ani->getID()).toAscii().data());
+                qDebug(QString("(%1) fitness(%3), food(%2) splitted to (%4)").arg(ani->getID()).arg(ani->food).arg(ani->getFitness()).arg(new_ani->getID()).toAscii().data());
                 ani->food -= 1000;
             }
             break;
@@ -205,6 +217,11 @@ Animal *World::findAnimalByCoord(ObjectCoord oc)
 void World::killAnimal(Animal *ani)
 {
     if (ani != NULL){
+        if (ani->getFitness() > best_fitness){ // store best animal
+            if (best_animal != NULL) delete best_animal;
+            best_animal = ani->cloneAnimal();
+            best_animal->setID(ani->getID());
+        }
         qDebug(QString("(%1) fitness(%2), food(%3) is dead").arg(ani->getID()).arg(ani->getFitness()).arg(ani->food).toAscii().data());
         map.deleteObj(ani->coord);  // clean map
         anis.removeAll(ani);        // remove ani from lives animals
