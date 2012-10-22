@@ -19,6 +19,7 @@ public:
     QImage getImage();
     //char getDistance(ObjectCoord oc, Direction dir);
     quint8 getDistance(ObjectCoord oc, Direction dir);
+    void addFood(quint32 count = 100);
 signals:
 
 public slots:
