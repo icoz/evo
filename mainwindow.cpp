@@ -13,12 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     //createAndSaveTestAnimals();
     //loadAnimals();
-    tmr_run.setInterval(100);
+    tmr_run.setInterval(1);
     connect(&tmr_run, SIGNAL(timeout()), SLOT(onTmrRunTimeout()));
-    tmr_food.setInterval(10000);
-    connect(&tmr_food, SIGNAL(timeout()), &w, SLOT(feedAnimal()));
-    tmr_new_anis.setInterval(15000);
-    connect(&tmr_new_anis, SIGNAL(timeout()), SLOT(onTmrNewAniTimeout()));
+//    tmr_food.setInterval(10000);
+//    connect(&tmr_food, SIGNAL(timeout()), &w, SLOT(feedAnimal()));
+//    tmr_new_anis.setInterval(15000);
+//    connect(&tmr_new_anis, SIGNAL(timeout()), SLOT(onTmrNewAniTimeout()));
     round_count = 0;
     is_saving_pics = false;
 }
@@ -33,14 +33,19 @@ void MainWindow::onTmrRunTimeout()
     //qDebug("time!");
     round_count++;
     tmr_run.stop();
+    if (round_count % 100 == 0)
+        w.feedAnimal();
+    if (round_count % 500 == 0)
+        onTmrNewAniTimeout();
     w.makeStep();
     qApp->sendPostedEvents();
     qApp->processEvents();
-    ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
+    if ((round_count % 100 == 0) && !is_saving_pics) // speed optimization
+        ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
     if (is_saving_pics){
         if (!QDir().exists(PICS_DIR))
             QDir().mkdir(PICS_DIR);
-        ui->label->pixmap()->save(QString(PICS_DIR+"/round_%1.png").arg(round_count));
+        ui->label->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
     }
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
