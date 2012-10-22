@@ -25,6 +25,7 @@ public:
     int getAnimalCount() {return anis.size();}
     quint32 getBestAnimalID(){ if (best_animal == NULL) return 0; return best_animal->getID();}
     quint32 getBestAnimalFitness(){ return best_fitness; }
+    void saveBestAnimal(QString filename="");
     void killAnimal(Animal* ani);
 signals:
     void tick();
