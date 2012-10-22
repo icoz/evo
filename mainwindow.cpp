@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     loadAnimals();
     tmr.setInterval(100);
     connect(&tmr, SIGNAL(timeout()), SLOT(onTimerTimeout()));
+    tmr_food.setInterval(5000);
+    connect(&tmr_food, SIGNAL(timeout()), &w, SLOT(feedAnimal()));
 }
 
 MainWindow::~MainWindow()
@@ -185,7 +187,7 @@ Animal *MainWindow::generateAnimal()
     QList<quint8> mems;
     for (i=0; i< maxCmd; i++){
         cmd << AnimalCommand(qrand() % MAX_ANIMAL_COMMAND);
-        cmd << AnimalCommand(qrand() % sizeof(quint8));
+        //cmd << AnimalCommand(qrand() % (2<<sizeof(quint8)));
     }
     for (i=0; i< maxMem; i++)
         mems << char(qrand() % sizeof(quint8));
