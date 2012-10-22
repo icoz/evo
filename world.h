@@ -23,6 +23,8 @@ public:
     QImage getImage();
     void makeStep();
     int getAnimalCount() {return anis.size();}
+    quint32 getBestAnimalID(){ return best_animal->getID();}
+    quint32 getBestAnimalFitness(){ return best_fitness; }
     void killAnimal(Animal* ani);
 signals:
     void tick();
