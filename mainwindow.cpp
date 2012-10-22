@@ -35,6 +35,7 @@ void MainWindow::onTimerTimeout()
     qApp->processEvents();
     ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
+    ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
     if (w.getAnimalCount() < 15){ // if we have less then 15 animals then generate new!
         for (int i=0; i < 50; i++){
             w.addAnimal(generateAnimal());
