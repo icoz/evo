@@ -10,7 +10,7 @@ class World : public QObject
 {
     Q_OBJECT
 public:
-    explicit World(QObject *parent = 0): QObject(parent) {}
+    explicit World(QObject *parent = 0): QObject(parent), current_ID(1) {}
 
     //ObjectType checkObjectCoord(ObjectCoord c);
     //EyeData getEye(ObjectCoord oc, Direction dir);
@@ -43,6 +43,7 @@ public slots:
 protected:
     Map map;
     QList<Animal*> anis;
+    quint32 current_ID;
     Animal* findAnimalByCoord(ObjectCoord oc);
 };
 

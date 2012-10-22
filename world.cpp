@@ -16,6 +16,7 @@ void World::addAnimal(Animal *ani, ObjectCoord coord_start)
     if (ani != NULL){
         ani->setParent(this);
         ani->setMap(&map);
+        ani->setID(current_ID++);
         connect(ani,SIGNAL(move(Direction)),SLOT(onMove(Direction)));
         connect(ani,SIGNAL(eat(Direction)),SLOT(onEat(Direction)));
         connect(ani,SIGNAL(suicide()),SLOT(onSuicide()));
@@ -55,7 +56,7 @@ QImage World::getImage()
 
 void World::makeStep()
 {
-    qApp->processEvents();
+    //qApp->processEvents();
     emit tick();
 }
 
@@ -99,12 +100,14 @@ void World::onEat(Direction direction)
         if (map.coordIsValid(oc)) oc = map.correctCoord(oc);
         switch (map.getType(oc)){
         case otFood: //food will be destroyed
+            ani->fitnessUp();
             ani->food += 100;
             map.deleteObj(oc);
             //qDebug("eat! :)");
             break;
         case otAnimal:
             //qDebug("eat animal! :)");
+            ani->fitnessUp(10);
             ani->food += 1000;
             //delete animal
             {
@@ -142,12 +145,13 @@ void World::onSuicide()
     if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
         Animal* ani = (Animal*) sender();
         if (ani != NULL){
-            map.deleteObj(ani->coord);
-            anis.removeAll(ani);
-            ani->disconnect(this);
+            //TODO: add stats
+            qDebug(QString("(%1) suicide with fitness(%2), food(%3)").arg(ani->getID()).arg(ani->getFitness()).arg(ani->food).toAscii().data());
+            map.deleteObj(ani->coord);  // clean map
+            anis.removeAll(ani);        // remove ani from lives animals
+            ani->disconnect(this);      // disconnect ani from world
             disconnect(this,SIGNAL(tick()),ani,SLOT(onTick()));
-            delete ani;
-            //qDebug("suicide :(");
+            delete ani;                 // kill ani
         }
     }
 }
@@ -171,10 +175,11 @@ void World::onSplit(Direction direction)
             map.deleteObj(oc);
             if (ani->food > 1000){
                 //addAnimal(ani->cmd, ani->mem);
+                ani->fitnessUp(50);
                 Animal *new_ani = ani->cloneAnimal();
                 addAnimal(new_ani,oc);
                 ani->food -= 1000;
-                qDebug("split! :)");
+                qDebug(QString("(%1) splitted to (%2)").arg(ani->getID()).arg(new_ani->getID()).toAscii().data());
             }
             break;
         case otAnimal:
