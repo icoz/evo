@@ -231,3 +231,8 @@ void World::killAnimal(Animal *ani)
         delete ani;                 // kill ani
     }
 }
+
+void World::feedAnimal()
+{
+    map.addFood(qrand()%1000+100);
+}

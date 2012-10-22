@@ -34,6 +34,7 @@ public slots:
     void onSuicide();
     void onSplit(Direction direction);
     void onSplit_Mutate(Direction direction);
+    void feedAnimal();
     /*void onMove(ObjectCoord obj, Direction direction);
     void onEat(ObjectCoord obj, Direction direction);
     void onWait(ObjectCoord obj);
