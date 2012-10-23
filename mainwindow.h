@@ -20,11 +20,19 @@ public:
 
 private slots:
     void onTmrRunTimeout();
-    void on_btnStart_clicked();
-    void on_btnStop_clicked();
     void on_btnSaveBest_clicked();
-    void on_btnSavePics_clicked();
     void on_cbxFast_toggled(bool checked);
+    void on_cbxSavePics_toggled(bool checked);
+    void on_cbxSaveOnQuit_toggled(bool checked);
+    void on_btnStart_toggled(bool checked);
+
+    void on_sbRedraw_valueChanged(int arg1);
+
+    void on_sbAnimal_valueChanged(int arg1);
+
+    void on_sbFood_valueChanged(int arg1);
+
+    void on_btnSavePic_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -34,6 +42,13 @@ private:
     bool is_saving_pics;
     bool is_fast;
     quint32 round_count;
+    struct {
+        quint32 food;
+        quint32 animal;
+        quint32 redraw;
+        quint32 low_animal_count;
+        quint32 high_animal_count;
+    } config;
     void createAndSaveTestAnimals();
     void loadAnimals();
     void generateAndSaveAnimal();

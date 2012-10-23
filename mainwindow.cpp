@@ -16,13 +16,21 @@ MainWindow::MainWindow(QWidget *parent) :
     tmr_run.setInterval(1);
     connect(&tmr_run, SIGNAL(timeout()), SLOT(onTmrRunTimeout()));
     round_count = 0;
-    is_saving_pics = false;
     is_fast = true;
+    is_saving_pics = false;
     ui->cbxFast->setChecked(is_fast);
+    ui->cbxSavePics->setChecked(is_saving_pics);
+    ui->cbxSaveOnQuit->setChecked(true);
+    config.redraw = ui->sbRedraw->value();
+    config.food = ui->sbFood->value();
+    config.animal = ui->sbAnimal->value();
+    config.low_animal_count = 50;
+    config.high_animal_count = 1500;
 }
 
 MainWindow::~MainWindow()
 {
+    w.saveBestAnimal();
     delete ui;
 }
 
@@ -31,15 +39,15 @@ void MainWindow::onTmrRunTimeout()
     //qDebug("time!");
     round_count++;
     tmr_run.stop();
-    if (round_count % 100 == 0)
+    if (round_count % config.food == 0)
         w.feedAnimal();
-    if (round_count % 500 == 0)
+    if (round_count % config.animal == 0)
         appendNewAnimals();
-    w.makeStep();
-    qApp->sendPostedEvents();
+    w.makeStep();           // go to next round: move all animals
+    qApp->sendPostedEvents();   // no window freezing!
     qApp->processEvents();
-    if ( is_saving_pics || !is_fast || (round_count % 100 == 0) )  // speed optimization
-        ui->label->setPixmap(QPixmap::fromImage(w.getImage()));
+    if ( is_saving_pics || !is_fast || (round_count % config.redraw == 0) )  // speed optimization
+        ui->label->setPixmap(QPixmap::fromImage(w.getImage())); //very slow operation
     if (is_saving_pics){
         if (!QDir().exists(PICS_DIR))
             QDir().mkdir(PICS_DIR);
@@ -47,11 +55,12 @@ void MainWindow::onTmrRunTimeout()
     }
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
-    ui->lblTime->setText(QString("Rounds: %1").arg(round_count));
-    if (w.getAnimalCount() < 50){ // if we have less then 50 animals then generate new!
+    ui->lblTime->setText(QString("Round: %1").arg(round_count));
+
+    if (w.getAnimalCount() < config.low_animal_count) // if we have less then 50 animals then generate new!
         appendNewAnimals();
-    }
-    if (w.getAnimalCount() > 1500) // if we have too many animals then kill weak animals!
+
+    if (w.getAnimalCount() > config.high_animal_count) // if we have too many animals then kill weak animals!
         w.killWeakAnimals();
 
     if (!timer_stop){
@@ -64,26 +73,6 @@ void MainWindow::appendNewAnimals()
     for (int i=0; i < 150; i++){
         w.addAnimal(generateAnimal());
     }
-}
-
-void MainWindow::on_btnStart_clicked()
-{
-    tmr_run.start();
-//    tmr_food.start();
-//    tmr_new_anis.start();
-    timer_stop = false;
-    //tmr.singleShot(500,this,SLOT(onTimerTimeout()));
-}
-
-void MainWindow::on_btnStop_clicked()
-{
-    timer_stop = true;
-//    tmr_food.stop();
-//    tmr_new_anis.stop();
-    //tmr.stop();
-#ifdef DEBUG
-    qDebug("MainWindow: timer is stopped.");
-#endif
 }
 
 void MainWindow::createAndSaveTestAnimals()
@@ -226,19 +215,52 @@ void MainWindow::on_btnSaveBest_clicked()
     w.saveBestAnimal();
 }
 
-void MainWindow::on_btnSavePics_clicked()
-{
-    if (is_saving_pics){//then stop saving
-        ui->btnSavePics->setText("Start saving pics!");
-    }else{//start saving pics
-        ui->btnSavePics->setText("Stop saving pics!");
-    }
-    is_saving_pics ^= true;
-}
-
 void MainWindow::on_cbxFast_toggled(bool checked)
 {
-//    is_fast ^= true;
-//    ui->cbxFast->setChecked(is_fast);
     is_fast = checked;
+}
+
+void MainWindow::on_cbxSavePics_toggled(bool checked)
+{
+    is_saving_pics = checked;
+}
+
+void MainWindow::on_cbxSaveOnQuit_toggled(bool checked)
+{
+    w.setSaveBestOnQuit(checked);
+}
+
+void MainWindow::on_btnStart_toggled(bool checked)
+{
+    if (checked){
+        tmr_run.start();
+        timer_stop = false;
+    }else{
+        timer_stop = true;
+#ifdef DEBUG
+        qDebug("MainWindow: timer is stopped.");
+#endif
+    }
+}
+
+void MainWindow::on_sbRedraw_valueChanged(int arg1)
+{
+    config.redraw = arg1;
+}
+
+void MainWindow::on_sbAnimal_valueChanged(int arg1)
+{
+    config.animal = arg1;
+}
+
+void MainWindow::on_sbFood_valueChanged(int arg1)
+{
+    config.food = arg1;
+}
+
+void MainWindow::on_btnSavePic_clicked()
+{
+    QPixmap px = ui->label->pixmap()->copy();
+    //TODO: open save-dialog box
+    px.save("pic.png");
 }
