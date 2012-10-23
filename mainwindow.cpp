@@ -46,16 +46,21 @@ void MainWindow::onTmrRunTimeout()
     w.makeStep();           // go to next round: move all animals
     qApp->sendPostedEvents();   // no window freezing!
     qApp->processEvents();
-    if ( is_saving_pics || !is_fast || (round_count % config.redraw == 0) )  // speed optimization
-        ui->label->setPixmap(QPixmap::fromImage(w.getImage())); //very slow operation
+    if ( is_saving_pics || !is_fast || (round_count % config.redraw == 0) ) { // speed optimization
+        ui->lblMap->setPixmap(QPixmap::fromImage(w.getImage())); //very slow operation
+        ui->lblCount->setText(QString::number(w.getAnimalCount()));
+        ui->lblFitness->setText(
+                    QString("Best (%1) with fitness (%2)"   ).arg(
+                            w.getBestAnimalID()             ).arg(
+                            w.getBestAnimalFitness()        ));
+        ui->lblCurAniID->setText(QString::number(w.getCurrentID()));
+    }
     if (is_saving_pics){
         if (!QDir().exists(PICS_DIR))
             QDir().mkdir(PICS_DIR);
-        ui->label->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
+        ui->lblMap->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
     }
-    ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
-    ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
-    ui->lblTime->setText(QString("Round: %1").arg(round_count));
+    ui->lblTime->setText(QString::number(round_count));
 
     if (w.getAnimalCount() < config.low_animal_count) // if we have less then 50 animals then generate new!
         appendNewAnimals();
@@ -260,7 +265,7 @@ void MainWindow::on_sbFood_valueChanged(int arg1)
 
 void MainWindow::on_btnSavePic_clicked()
 {
-    QPixmap px = ui->label->pixmap()->copy();
+    QPixmap px = ui->lblMap->pixmap()->copy();
     //TODO: open save-dialog box
     px.save("pic.png");
 }
