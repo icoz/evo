@@ -10,7 +10,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = evo
 TEMPLATE = app
-
+OBJECTS_DIR = build
+MOC_DIR = build
+UI_DIR  = build
+RCC_DIR = build
 
 SOURCES += main.cpp\
         mainwindow.cpp \
