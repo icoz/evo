@@ -29,6 +29,7 @@ public:
     void killAnimal(Animal* ani);
     void setSaveBestOnQuit(bool yes) { save_best_on_destroy = yes;}
     Animal* findBestLiveAnimal();
+    quint32 getCurrentID() { return current_ID; }
 signals:
     void tick();
 
