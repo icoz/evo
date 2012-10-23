@@ -3,7 +3,7 @@
 
 
 World::World(QObject *parent):
-    QObject(parent), best_animal(NULL), best_fitness(0), current_ID(1), save_best_on_destroy(false)
+    QObject(parent), best_animal(NULL), best_fitness(0), save_best_on_destroy(false), current_ID(1)
 {
 }
 
