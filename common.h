@@ -5,7 +5,7 @@
 #define MAP_X_SIZE 256
 #define MAP_Y_SIZE 256
 
-#define DEBUG
+//#define DEBUG
 
 enum Direction {Left, Right, Up, Down};
 
