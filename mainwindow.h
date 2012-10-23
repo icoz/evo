@@ -20,28 +20,25 @@ public:
 
 private slots:
     void onTmrRunTimeout();
-    void onTmrNewAniTimeout();
     void on_btnStart_clicked();
-
     void on_btnStop_clicked();
-
     void on_btnSaveBest_clicked();
-
     void on_btnSavePics_clicked();
+    void on_cbxFast_toggled(bool checked);
 
 private:
     Ui::MainWindow *ui;
     World w;
     QTimer tmr_run;
-    QTimer tmr_food;
-    QTimer tmr_new_anis;
     bool timer_stop;
     bool is_saving_pics;
+    bool is_fast;
     quint32 round_count;
     void createAndSaveTestAnimals();
     void loadAnimals();
     void generateAndSaveAnimal();
     Animal* generateAnimal();
+    void appendNewAnimals();
 };
 
 #endif // MAINWINDOW_H

@@ -83,12 +83,29 @@
        </spacer>
       </item>
       <item>
+       <widget class="QCheckBox" name="cbxFast">
+        <property name="text">
+         <string>Fast</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnSavePics">
         <property name="text">
          <string>Start saving pics</string>
         </property>
         <property name="checkable">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btnSaveBest">
+        <property name="text">
+         <string>Save Best</string>
         </property>
        </widget>
       </item>
@@ -104,13 +121,6 @@
          </size>
         </property>
        </spacer>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btnSaveBest">
-        <property name="text">
-         <string>Save Best</string>
-        </property>
-       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnQuit">
