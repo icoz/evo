@@ -40,7 +40,7 @@ void MainWindow::onTmrRunTimeout()
     if (is_saving_pics){
         if (!QDir().exists(PICS_DIR))
             QDir().mkdir(PICS_DIR);
-        ui->label->pixmap()->save(QString(PICS_DIR+"/round_%1.png").arg(round_count));
+        ui->label->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
     }
     ui->lblCount->setText(QString("Animal count %1").arg(w.getAnimalCount()));
     ui->lblFitness->setText(QString("Best (%1) with fitness (%2)").arg(w.getBestAnimalID()).arg(w.getBestAnimalFitness()));
@@ -195,7 +195,7 @@ void MainWindow::generateAndSaveAnimal()
     QList<quint8> mems;
     for (i=0; i< maxCmd; i++){
         cmd << AnimalCommand(qrand() % MAX_ANIMAL_COMMAND);
-        cmd << AnimalCommand(qrand() % sizeof(quint8));
+        cmd << AnimalCommand(qrand() % (2 << sizeof(quint8)));
     }
     for (i=0; i< maxMem; i++)
         mems << char(qrand() % sizeof(quint8));
