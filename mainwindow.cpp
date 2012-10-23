@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     config.redraw = ui->sbRedraw->value();
     config.food = ui->sbFood->value();
     config.animal = ui->sbAnimal->value();
-    config.low_animal_count = 50;
-    config.high_animal_count = 1500;
+    config.low_animal_count = ui->sbLowAnimal->value();
+    config.high_animal_count = ui->sbManyAnimal->value();
 }
 
 MainWindow::~MainWindow()
