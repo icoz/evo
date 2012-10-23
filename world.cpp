@@ -2,28 +2,32 @@
 #include <QApplication>
 
 
-World::World(QObject *parent): QObject(parent), current_ID(1), best_animal(NULL), best_fitness(0)
+World::World(QObject *parent):
+    QObject(parent), best_animal(NULL), best_fitness(0), current_ID(1), save_best_on_destroy(false)
 {
 }
 
 World::~World()
 {
-    Animal* ani;
-    foreach (ani,anis){
-        if (ani->getFitness() > best_fitness){ // store best animal
-            if (best_animal != NULL) delete best_animal;
-            best_fitness = ani->getFitness();
-            best_animal = ani->cloneAnimal();
-            best_animal->setID(ani->getID());
+    if (save_best_on_destroy){
+        Animal* ani;
+        foreach (ani,anis){
+            if (ani->getFitness() > best_fitness){ // store best animal
+                if (best_animal != NULL) delete best_animal;
+                best_fitness = ani->getFitness();
+                best_animal = ani->cloneAnimal();
+                best_animal->setID(ani->getID());
+            }
+        }
+        if (best_animal != NULL){
+#ifdef DEBUG
+            qDebug(QString("Best animal (%1) stored with fitness (%2)").arg(best_animal->getID()).arg(best_fitness).toAscii().data());
+#endif
+            saveBestAnimal();
         }
     }
-    if (best_animal != NULL){
-#ifdef DEBUG
-        qDebug(QString("Best animal (%1) stored with fitness (%2)").arg(best_animal->getID()).arg(best_fitness).toAscii().data());
-#endif
-        saveBestAnimal();
+    if (best_animal != NULL)
         delete best_animal;
-    }
 }
 
 /*EyeData World::getEye(ObjectCoord oc, Direction dir)
@@ -47,8 +51,6 @@ void World::addAnimal(Animal *ani, ObjectCoord coord_start)
         connect(ani,SIGNAL(wait()),SLOT(onWait()));
         connect(ani,SIGNAL(split(Direction)),SLOT(onSplit(Direction)));
         connect(ani,SIGNAL(splitMutate(Direction)),SLOT(onSplit_Mutate(Direction)));
-    //    connect(ani,SIGNAL(),SLOT());
-    //    connect(ani,SIGNAL(),SLOT());
         connect(this,SIGNAL(tick()),ani,SLOT(onTick()));
         if ((coord_start.x != -1) && (coord_start.y != -1)){
             ani->coord.x = coord_start.x;
@@ -80,7 +82,6 @@ QImage World::getImage()
 
 void World::makeStep()
 {
-    //qApp->processEvents();
     emit tick();
 }
 
@@ -94,7 +95,6 @@ void World::saveBestAnimal(QString filename)
 
 void World::onMove(Direction direction)
 {
-    //qDebug("world::onmove(): class-sender = %s",sender()->metaObject()->className());
     if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
         Animal* ani = (Animal*) sender();
         if (ani == NULL) return;
@@ -135,17 +135,14 @@ void World::onEat(Direction direction)
             ani->fitnessUp();
             ani->food += 100;
             map.deleteObj(oc);
-            //qDebug("eat! :)");
             break;
         case otAnimal:
-            //qDebug("eat animal! :)");
             ani->fitnessUp(10);
             ani->food += 1000;
             //delete animal
             {
                 Animal* ani2=findAnimalByCoord(oc);
                 if (ani2 != NULL){
-//                    anis.removeAll(ani2);
 #ifdef DEBUG
                     qDebug(QString("(%1) kill (%2)").arg(ani->getID()).arg(ani2->getID()).toAscii().data());
 #endif
@@ -183,7 +180,9 @@ void World::onSuicide()
         Animal* ani = (Animal*) sender();
         if (ani != NULL){
             //TODO: add stats
+#ifdef DEBUG
             qDebug(QString("(%1) suicide with fitness(%2), food(%3)").arg(ani->getID()).arg(ani->getFitness()).arg(ani->food).toAscii().data());
+#endif
             killAnimal(ani);
         }
     }
@@ -256,6 +255,20 @@ void World::killAnimal(Animal *ani)
         disconnect(this,SIGNAL(tick()),ani,SLOT(onTick()));
         delete ani;                 // kill ani
     }
+}
+
+Animal *World::findBestLiveAnimal()
+{
+    Animal *ani, *best;
+    best = NULL;
+    quint32 best_fitness=0;
+    foreach (ani,anis){
+        if (ani->getFitness() > best_fitness){ // store best animal
+            best_fitness = ani->getFitness();
+            best = ani;
+        }
+    }
+    return best;
 }
 
 void World::feedAnimal()

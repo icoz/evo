@@ -22,11 +22,13 @@ public:
                    ObjectCoord coord_start = ObjectCoord(-1,-1));
     QImage getImage();
     void makeStep();
-    int getAnimalCount() {return anis.size();}
+    quint32 getAnimalCount() {return anis.size();}
     quint32 getBestAnimalID(){ if (best_animal == NULL) return 0; return best_animal->getID();}
     quint32 getBestAnimalFitness(){ return best_fitness; }
     void saveBestAnimal(QString filename="");
     void killAnimal(Animal* ani);
+    void setSaveBestOnQuit(bool yes) { save_best_on_destroy = yes;}
+    Animal* findBestLiveAnimal();
 signals:
     void tick();
 
@@ -50,6 +52,7 @@ protected:
     QList<Animal*> anis;
     Animal* best_animal;
     quint32 best_fitness;
+    bool save_best_on_destroy;
     quint32 current_ID;
     Animal* findAnimalByCoord(ObjectCoord oc);
 };
