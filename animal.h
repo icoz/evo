@@ -29,12 +29,12 @@ public:
 //static
     static QList<quint8> compile(QList<AnimalCommand> acmd);
     static Animal* loadAnimal(QString filename);
-    void saveAnimal(QString filename);
+    void saveAnimal(QString filename, bool with_code = true);
     static void saveAnimal(QString filename,
                            QList<quint8> cmds,
                            QList<quint8> mems,
                            int cmd_start_ptr = 0,
-                           int mem_start_ptr = 0);
+                           int mem_start_ptr = 0, bool with_code = false);
     Animal* cloneAnimal();
     quint32 getID() { return ID; }
     void setID(quint32 _ID) { ID = _ID;}

@@ -1,6 +1,7 @@
 #include "animal.h"
 #include <QFile>
 #include <QDataStream>
+#include <QTextStream>
 
 void Animal::onTick()
 {
@@ -222,12 +223,12 @@ Animal *Animal::loadAnimal(QString filename)
     return (new Animal(cmds2,mems2,cmd_ptr2,mem_ptr2));
 }
 
-void Animal::saveAnimal(QString filename)
+void Animal::saveAnimal(QString filename, bool with_code)
 {
-    saveAnimal(filename,cmd,mem,cmd_ptr,mem_ptr);
+    saveAnimal(filename,cmd,mem,cmd_ptr,mem_ptr, with_code);
 }
 
-void Animal::saveAnimal(QString filename, QList<quint8> cmds, QList<quint8> mems, int cmd_start_ptr, int mem_start_ptr)
+void Animal::saveAnimal(QString filename, QList<quint8> cmds, QList<quint8> mems, int cmd_start_ptr, int mem_start_ptr, bool with_code)
 {
     QFile fout(filename);
     if (!fout.open(QIODevice::WriteOnly)) return;
@@ -239,6 +240,152 @@ void Animal::saveAnimal(QString filename, QList<quint8> cmds, QList<quint8> mems
     foreach (quint8 c, cmds) ds << c;
     foreach (quint8 c, mems) ds << c;
     fout.close();
+    if (with_code){
+        QFile fout(filename.append(".code"));
+        if (!fout.open(QIODevice::WriteOnly)) return;
+        QTextStream ts(&fout);
+        QString code_line;
+        int cmd_ptr_2=0;
+        while (cmd_ptr_2 != cmds.size()) {
+            char cur_cmd = cmds.at(cmd_ptr_2++);
+            switch (AnimalCommand(cur_cmd)) {
+            case move_cmd_left:
+                code_line = "move_cmd_left";
+                break;
+            case move_cmd_right:
+                code_line = "move_cmd_right";
+                break;
+            case jump_to:
+                {
+                    signed char jmp = cmds.at(cmd_ptr_2++);
+                    code_line = "jump " + QString::number(jmp);
+                }
+                break;
+            case jump_to_ifz:
+                {
+                    signed char jmp = cmds.at(cmd_ptr_2++);
+                    code_line = "jump " + QString::number(jmp) + " if zero";
+                }
+                break;
+            case jump_to_ifnz:
+                {
+                    signed char jmp = cmds.at(cmd_ptr_2++);
+                    code_line = "jump " + QString::number(jmp) + " if not zero";
+                }
+                break;
+            case restart:
+                code_line = "restart";
+            case end:
+                code_line = "end";
+                break;
+            //sensor group
+            case eye_up_distance:
+                code_line = "eye_up_distance";
+                break;
+            case eye_down_distance:
+                code_line = "eye_down_distance";
+                break;
+            case eye_left_distance:
+                code_line = "eye_left_distance";
+                break;
+            case eye_right_distance:
+                code_line = "eye_right_distance";
+                break;
+            case touch_up:
+                code_line = "touch_up";
+                break;
+            case touch_down:
+                code_line = "touch_down";
+                break;
+            case touch_left:
+                code_line = "touch_left";
+                break;
+            case touch_right:
+                code_line = "touch_right";
+                break;
+            //mem group
+            case move_mem_left:
+                code_line = "move_mem_left";
+                break;
+            case move_mem_right:
+                code_line = "move_mem_right";
+                break;
+            case save_to_mem:
+                code_line = "save_to_mem";
+                break;
+            case load_from_mem:
+                code_line = "load_from_mem";
+                break;
+            case add_mem:
+                code_line = "add_mem";
+                break;
+            case sub_mem:
+                code_line = "sub_mem";
+                break;
+            case set_mem_ptr:
+                code_line = "set_mem_ptr";
+                break;
+            //data group
+            case data_clear:
+                code_line = "data_clear";
+                break;
+            case data_inc:
+                code_line = "data_inc";
+                break;
+            case data_dec:
+                code_line = "data_dec";
+                break;
+            //action group
+            case action_move_left:
+                code_line = "action_move_left";
+                break;
+            case action_move_right:
+                code_line = "action_move_right";
+                break;
+            case action_move_up:
+                code_line = "action_move_up";
+                break;
+            case action_move_down:
+                code_line = "action_move_down";
+                break;
+            case action_eat_left:
+                code_line = "action_eat_left";
+                break;
+            case action_eat_right:
+                code_line = "action_eat_right";
+                break;
+            case action_eat_up:
+                code_line = "action_eat_up";
+                break;
+            case action_eat_down:
+                code_line = "action_eat_down";
+                break;
+            case action_wait:
+                code_line = "action_wait";
+                break;
+            case action_suicide:
+                code_line = "action_suicide";
+                break;
+            case action_split:
+                code_line = "action_split";
+                break;
+            case action_split_mutate:
+                code_line = "action_split_mutate";
+                break;
+            case start:
+                code_line = "start";
+                break;
+            case nop:
+                code_line = "nop";
+                break;
+            default: //nop,start
+                code_line = "unknown opcode";
+                break;
+            }
+            ts << code_line << endl;
+        }
+        fout.close();
+    }
 }
 
 Animal *Animal::cloneAnimal()
