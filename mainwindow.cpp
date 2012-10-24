@@ -13,6 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     //createAndSaveTestAnimals();
     //loadAnimals();
+    Animal *ani = Animal::loadAnimal("best/best_id11785_fit28251.ani");
+    ani->saveAnimal("best/best_id11785_fit28251.ani.code",true);
     tmr_run.setInterval(1);
     connect(&tmr_run, SIGNAL(timeout()), SLOT(onTmrRunTimeout()));
     round_count = 0;
@@ -265,7 +267,9 @@ void MainWindow::on_sbFood_valueChanged(int arg1)
 
 void MainWindow::on_btnSavePic_clicked()
 {
-    QPixmap px = ui->lblMap->pixmap()->copy();
-    //TODO: open save-dialog box
-    px.save("pic.png");
+    if (ui->lblMap->pixmap() != NULL){
+        QPixmap px = ui->lblMap->pixmap()->copy();
+        //TODO: open save-dialog box
+        px.save("pic.png");
+    }
 }
