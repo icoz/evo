@@ -56,8 +56,6 @@ void MainWindow::onTmrRunTimeout()
                             w.getBestAnimalID()             ).arg(
                             w.getBestAnimalFitness()        ));
         ui->lblCurAniID->setText(QString::number(w.getCurrentID()));
-    }
-    if (is_saving_pics){
         if (!QDir().exists(PICS_DIR))
             QDir().mkdir(PICS_DIR);
         ui->lblMap->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
