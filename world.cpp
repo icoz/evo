@@ -225,7 +225,54 @@ void World::onSplit(Direction direction)
 
 void World::onSplit_Mutate(Direction direction)
 {
-    Q_UNUSED(direction)
+    if (QString("Animal").compare(sender()->metaObject()->className()) == 0){
+        Animal* ani = (Animal*) sender();
+        if (ani == NULL) return;
+        ani->food--;
+        if (ani->food < 0){
+            onSuicide();
+            return;
+        }
+        ObjectCoord oc = ani->coord;
+        oc.addDist(1,direction);
+        if (map.coordIsValid(oc)) oc = map.correctCoord(oc);
+        switch (map.getType(oc)){
+        case otNone:
+        case otFood: //food will be destroyed
+            if (ani->food > 1000){
+                map.deleteObj(oc);
+                ani->fitnessUp(50);
+                //Animal *new_ani = ani->cloneAnimal();
+                QList<quint8> cmds = ani->getCommands();
+                QList<quint8> mems = ani->getMemory();
+                for (int i=0; i < (qrand() % 10); i++){
+                    switch(qrand() % 3){
+                    case 0:
+                        cmds[qrand() % cmds.size()] = qrand() % (256);
+                        break;
+                    case 1:
+                        cmds.append(qrand() % (256));
+                        break;
+                    case 2:
+                        cmds.removeAt(qrand() % cmds.size());
+                        break;
+                    }
+
+                }
+                Animal *new_ani = new Animal(cmds,mems);
+                addAnimal(new_ani,oc);
+#ifdef DEBUG
+                qDebug(QString("(%1) fitness(%3), food(%2) splitted to (%4)").arg(ani->getID()).arg(ani->food).arg(ani->getFitness()).arg(new_ani->getID()).toAscii().data());
+#endif
+                ani->food -= 1000;
+            }
+            break;
+        case otAnimal:
+        case otStone:
+            //You cannot split on Stone and Animal!
+            break;
+        }
+    }
 }
 
 Animal *World::findAnimalByCoord(ObjectCoord oc)

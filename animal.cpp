@@ -147,7 +147,8 @@ void Animal::run()
 //            emit split(Down);
             return; break;
         case action_split_mutate:
-            //emit splitMutate();
+            dir = Direction(qrand() % 4);
+            emit splitMutate(dir);
             return; break;
         case start:
         case nop:
