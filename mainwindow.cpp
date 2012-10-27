@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -268,6 +269,10 @@ void MainWindow::on_btnSavePic_clicked()
     if (ui->lblMap->pixmap() != NULL){
         QPixmap px = ui->lblMap->pixmap()->copy();
         //TODO: open save-dialog box
-        px.save("pic.png");
+        QString fileName = QFileDialog::getSaveFileName(this,
+                                        "Save current picture",
+                                        "", tr("Png Files (*.png)"));
+        if (fileName.isEmpty()) return;
+        px.save(fileName);
     }
 }
