@@ -90,7 +90,8 @@ void World::saveBestAnimal(QString filename)
     if (filename.isEmpty()){
         filename = QString("best_id%1_fit%2.ani").arg(best_animal->getID()).arg(best_fitness);
     }
-    best_animal->saveAnimal(filename);
+    if (best_animal != NULL)
+        best_animal->saveAnimal(filename);
 }
 
 void World::onMove(Direction direction)
