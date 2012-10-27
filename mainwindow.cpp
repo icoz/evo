@@ -13,8 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     //createAndSaveTestAnimals();
     //loadAnimals();
-    Animal *ani = Animal::loadAnimal("best/best_id11785_fit28251.ani");
-    ani->saveAnimal("best/best_id11785_fit28251.ani.code",true);
+    //Animal *ani = Animal::loadAnimal("best/best_id11785_fit28251.ani");
+    //ani->saveAnimal("best/best_id11785_fit28251.ani.code",true);
     tmr_run.setInterval(1);
     connect(&tmr_run, SIGNAL(timeout()), SLOT(onTmrRunTimeout()));
     round_count = 0;
