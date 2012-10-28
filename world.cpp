@@ -248,7 +248,7 @@ void World::onSplit_Mutate(Direction direction)
                 QList<quint8> cmds = ani->getCommands();
                 QList<quint8> mems = ani->getMemory();
                 for (int i=0; i < (qrand() % 10); i++){
-                    switch(qrand() % 3){
+                    switch(qrand() % 4){
                     case 0:
                         cmds[qrand() % cmds.size()] = qrand() % (256);
                         break;
@@ -257,6 +257,9 @@ void World::onSplit_Mutate(Direction direction)
                         break;
                     case 2:
                         cmds.removeAt(qrand() % cmds.size());
+                        break;
+                    case 3:
+                        cmds.insert(qrand() % cmds.size(), qrand() % (256));
                         break;
                     }
 
