@@ -59,7 +59,8 @@ void MainWindow::onTmrRunTimeout()
         ui->lblCurAniID->setText(QString::number(w.getCurrentID()));
         if (!QDir().exists(PICS_DIR))
             QDir().mkdir(PICS_DIR);
-        ui->lblMap->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
+        if (is_saving_pics)
+            ui->lblMap->pixmap()->save(QString(PICS_DIR)+QString("/round_%1.png").arg(round_count));
     }
     ui->lblTime->setText(QString::number(round_count));
 
