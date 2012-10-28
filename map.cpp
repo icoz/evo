@@ -108,11 +108,14 @@ void Map::addFood(quint32 count)
 {
     for (quint32 i=0; i < count; i++){
         int x,y;
-        do{
+        for (int cnt=0; cnt < 10; cnt++){
             x = qrand() % MAP_X_SIZE;
             y = qrand() % MAP_Y_SIZE;
-        } while(map[x][y] != quint8(otNone));
-        map[x][y] = quint8(otFood);
+            if (map[x][y] == quint8(otNone)){
+                map[x][y] = quint8(otFood);
+                break;
+            }
+        }
     }
 }
 
