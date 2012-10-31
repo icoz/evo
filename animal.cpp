@@ -13,7 +13,7 @@ void Animal::run()
     int i = MAX_STEPS;
     Direction dir;
     while (i-- > 0) {
-        if (cmd_ptr == cmd.size()) {
+        if ((cmd_ptr < 0) || (cmd_ptr >= cmd.size())) {
             cmd_ptr = 0;
         }
         char cur_cmd = cmd.at(cmd_ptr++);
@@ -27,7 +27,7 @@ void Animal::run()
             break;
         case jump_to:
             {
-            signed char jmp = cmd.at(cmd_ptr);
+            signed char jmp = (cmd_ptr < cmd.size()) ? cmd.at(cmd_ptr) : 0;
             cmd_ptr += jmp;
             if (cmd_ptr < 0) cmd_ptr += cmd.size();
             if (cmd_ptr >= cmd.size()) cmd_ptr -= cmd.size();
@@ -35,7 +35,7 @@ void Animal::run()
             break;
         case jump_to_ifz:
             if (data == 0) {
-                signed char jmp = cmd.at(cmd_ptr);
+                signed char jmp = (cmd_ptr < cmd.size()) ? cmd.at(cmd_ptr) : 0;
                 cmd_ptr += jmp;
                 if (cmd_ptr < 0) cmd_ptr += cmd.size();
                 if (cmd_ptr >= cmd.size()) cmd_ptr -= cmd.size();
@@ -43,7 +43,7 @@ void Animal::run()
             break;
         case jump_to_ifnz:
             if (data != 0) {
-                signed char jmp = cmd.at(cmd_ptr);
+                signed char jmp = (cmd_ptr < cmd.size()) ? cmd.at(cmd_ptr) : 0;
                 cmd_ptr += jmp;
                 if (cmd_ptr < 0) cmd_ptr += cmd.size();
                 if (cmd_ptr >= cmd.size()) cmd_ptr -= cmd.size();
@@ -166,7 +166,7 @@ void Animal::searchStart()
         cmd_ptr = 0;
         return;
     }
-    if (cmd_ptr == cmd.size()) cmd_ptr = 0;
+    if (cmd_ptr >= cmd.size()) cmd_ptr = 0;
     //while ((AnimalCommand(cmd.at(cmd_ptr++)) != start) || (cmd_ptr == cmd.size())) {}
     //while ((cmd_ptr != cmd.size()) || (AnimalCommand(cmd.at(cmd_ptr++)) != start)) {}
     cmd_ptr = cmd.indexOf(start);
@@ -258,19 +258,19 @@ void Animal::saveAnimal(QString filename, QList<quint8> cmds, QList<quint8> mems
                 break;
             case jump_to:
                 {
-                    signed char jmp = cmds.at(cmd_ptr_2++);
+                    signed char jmp = (cmd_ptr_2 < cmds.size()) ? cmds.at(cmd_ptr_2++) : 0;
                     code_line = "jump " + QString::number(jmp);
                 }
                 break;
             case jump_to_ifz:
                 {
-                    signed char jmp = cmds.at(cmd_ptr_2++);
+                    signed char jmp = (cmd_ptr_2 < cmds.size()) ? cmds.at(cmd_ptr_2++) : 0;
                     code_line = "jump " + QString::number(jmp) + " if zero";
                 }
                 break;
             case jump_to_ifnz:
                 {
-                    signed char jmp = cmds.at(cmd_ptr_2++);
+                    signed char jmp = (cmd_ptr_2 < cmds.size()) ? cmds.at(cmd_ptr_2++) : 0;
                     code_line = "jump " + QString::number(jmp) + " if not zero";
                 }
                 break;
