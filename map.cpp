@@ -53,36 +53,23 @@ ObjectCoord Map::correctCoord(ObjectCoord oc)
     return oc2;
 }
 
-QImage Map::getImage()
+QImage& Map::getImage()
 {
-    QImage p(2*MAP_X_SIZE,2*MAP_Y_SIZE,QImage::Format_RGB32);
-    for (int i=0; i<MAP_X_SIZE; i++)
-        for (int j=0; j<MAP_Y_SIZE; j++){
-            QColor c;
-            switch (ObjectType(map[i][MAP_Y_SIZE - j])){
-            case otNone:
-                c = Qt::white;
-                break;
-            case otFood:
-                c = Qt::green;
-                break;
-            case otAnimal:
-                c = Qt::blue;
-                break;
-            case otStone:
-                c = Qt::red;
-                break;
-            default:
-                c = Qt::gray;
+    static QRgb a[4] = {0xffffffff, 0xffff0000, 0xff00ff00 , 0xff0000ff};
+    static QImage p(MAP_X_SIZE,MAP_Y_SIZE,QImage::Format_RGB32);
+    static bool first = true;
+    p = p.scaled(MAP_X_SIZE,MAP_Y_SIZE);
+    for (int i=0; i<MAP_X_SIZE; ++i)
+        for (int j=0; j<MAP_Y_SIZE; ++j){
+            QRgb c = a[ObjectType(map[i][MAP_Y_SIZE - j])];
+            if(c!=0xffff0000 || first){
+                p.setPixel(i ,j ,c);
             }
-            p.setPixel(2*i  ,2*j  ,c.toRgb().rgb());
-            p.setPixel(2*i  ,2*j+1,c.toRgb().rgb());
-            p.setPixel(2*i+1,2*j  ,c.toRgb().rgb());
-            p.setPixel(2*i+1,2*j+1,c.toRgb().rgb());
         }
+    first = false;
+    p = p.scaled(2*MAP_X_SIZE,2*MAP_Y_SIZE);
     return p;
 }
-
 
 quint8 Map::getDistance(ObjectCoord oc, Direction dir)
 {

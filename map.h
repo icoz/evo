@@ -16,7 +16,7 @@ public:
     bool coordIsValid(int x, int y);
     bool coordIsValid(ObjectCoord oc);
     ObjectCoord correctCoord(ObjectCoord oc);
-    QImage getImage();
+    QImage& getImage();
     //char getDistance(ObjectCoord oc, Direction dir);
     quint8 getDistance(ObjectCoord oc, Direction dir);
     void addFood(quint32 count = 100);
